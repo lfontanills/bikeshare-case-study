@@ -3,7 +3,7 @@
 - Case study no.1: How does a bike-share navigate speedy success?
 
 ## r packages
-- tidyverse
+- tidyverse (inc. dplyr, ggplot2)
 - lubridate
 
 ## data source
