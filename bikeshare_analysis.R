@@ -1,1 +1,51 @@
-# EDA 
+# Descriptive analysis of ride length by membership type
+
+# all rider types, all trips
+summary(rides_all$ride_length)
+
+# compare members and casual users
+aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = mean)
+aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = median)
+aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = max)
+aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = min)
+
+# compare average ride time per day of week
+aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday, FUN = mean)
+
+# compare average ride time by day of month
+aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$day, FUN = mean)
+
+# compare average ride time by month
+aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$month, FUN = mean)
+
+# compare ridership by weekday, create visualization
+rides_all %>% 
+  group_by(member_casual, weekday) %>% 
+  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, weekday) %>% 
+  ggplot(aes(x=weekday, y=number_of_rides, fill=member_casual)) +
+  geom_col(position = "dodge")
+
+# compare ridership by month, create visualization
+rides_all %>% 
+  group_by(member_casual, month) %>% 
+  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, month) %>% 
+  ggplot(aes(x=month, y=number_of_rides, fill=member_casual)) +
+  geom_col(position = "dodge")
+
+# compare ride length by weekday, create visualization
+rides_all %>% 
+  group_by(member_casual, weekday) %>% 
+  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, weekday) %>% 
+  ggplot(aes(x=weekday, y=average_duration, fill=member_casual)) +
+  geom_col(position = "dodge")
+
+# compare ride length by month, create visualization
+rides_all %>% 
+  group_by(member_casual, month) %>% 
+  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, month) %>% 
+  ggplot(aes(x=month, y=average_duration, fill=member_casual)) +
+  geom_col(position = "dodge")
