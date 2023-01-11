@@ -35,20 +35,3 @@ str(rides_all_2022)
 
 rides_all_2022 %>% 
   arrange(started_at)
-
-# change variables to datetime: started_at, ended_at
-rides_all_2022$started_at <- ymd_hms(rides_all_2022$started_at)
-rides_all_2022$ended_at <- ymd_hms(rides_all_2022$ended_at)
-
-# convert df to tibble
-rides_all <- as_tibble(rides_all_2022)
-
-# add variable ride_length
-rides_all <- 
-  rides_all %>% 
-  mutate(ride_length = ended_at - started_at)
-
-# add variable day_of_week, Sunday = 1
-rides_all <-
-  rides_all %>% 
-  mutate(day_of_week = wday(started_at))
