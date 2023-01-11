@@ -8,6 +8,10 @@ summary(rides_202201)
 rides_202201 %>% 
   filter(start_lng > -86) # 1 ride
 
+# locate rides with no end_lat
+rides_202201_v2 %>% 
+  filter(is.na(end_lat) | is.na(end_lng))
+
 # create columns with starting, ending datetimes
 rides_202201$start_datetime <- ymd_hms(rides_202201$started_at)
 rides_202201$end_datetime <- ymd_hms(rides_202201$ended_at)
@@ -31,7 +35,7 @@ summary(rides_202201$day)
 
 # create new data frame with cleaned January data
 rides_202201_v2 <- 
-  rides_202201[!(rides_202201$ride_length < 60 | rides_202201$ride_length > 86400 | rides_202201$start_lng > -86),]
+  rides_202201[!(rides_202201$ride_length < 60 | rides_202201$ride_length > 86400 | rides_202201$start_lng > -86 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),]
 
 # remove started_at, ended_at columns
 rides_202201_v2 <- 
@@ -53,7 +57,7 @@ rides_202202 %>%
 rides_202202$weekday <- wday(rides_202202$start_datetime) # create weekday variable
 rides_202202$month <- month(rides_202202$start_datetime) # create month variable
 rides_202202$day <- day(rides_202202$start_datetime) # create day number variable - non leap-year
-rides_202202_v2 <- rides_202202[!(rides_202202$ride_length < 60 | rides_202202$ride_length > 86400),] 
+rides_202202_v2 <- rides_202202[!(rides_202202$ride_length < 60 | rides_202202$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),]
 rides_202202_v2 <- rides_202202_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202202)
@@ -75,7 +79,7 @@ rides_202203 %>%
 rides_202203$weekday <- wday(rides_202203$start_datetime) # create weekday variable
 rides_202203$month <- month(rides_202203$start_datetime) # create month variable
 rides_202203$day <- day(rides_202203$start_datetime) # create day number variable
-rides_202203_v2 <- rides_202203[!(rides_202203$ride_length < 60 | rides_202203$ride_length > 86400),] 
+rides_202203_v2 <- rides_202203[!(rides_202203$ride_length < 60 | rides_202203$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),] 
 rides_202203_v2 <- rides_202203_v2 %>% 
   select(-c(started_at, ended_at, ride_hour, ride_start_time))
 rm(rides_202203)
@@ -91,8 +95,8 @@ rides_202204 %>%
   filter(ride_length < 60 | ride_length > 86400) #7619 rides
 rides_202204$weekday <- wday(rides_202204$start_datetime) # create weekday variable
 rides_202204$month <- month(rides_202204$start_datetime) # create month variable
-rides_202204$day <- day(rides_202204$start_datetime) # create day number variable - non leap-year
-rides_202204_v2 <- rides_202204[!(rides_202204$ride_length < 60 | rides_202204$ride_length > 86400),] 
+rides_202204$day <- day(rides_202204$start_datetime) # create day number variable
+rides_202204_v2 <- rides_202204[!(rides_202204$ride_length < 60 | rides_202204$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),]
 rides_202204_v2 <- rides_202204_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202204)
@@ -108,8 +112,8 @@ rides_202205 %>%
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
 rides_202205$weekday <- wday(rides_202205$start_datetime) # create weekday variable
 rides_202205$month <- month(rides_202205$start_datetime) # create month variable
-rides_202205$day <- day(rides_202205$start_datetime) # create day number variable - non leap-year
-rides_202205_v2 <- rides_202205[!(rides_202205$ride_length < 60 | rides_202205$ride_length > 86400),] 
+rides_202205$day <- day(rides_202205$start_datetime) # create day number variable
+rides_202205_v2 <- rides_202205[!(rides_202205$ride_length < 60 | rides_202205$ride_length > 86400) | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),] 
 rides_202205_v2 <- rides_202205_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202205)
@@ -125,8 +129,8 @@ rides_202206 %>%
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
 rides_202206$weekday <- wday(rides_202206$start_datetime) # create weekday variable
 rides_202206$month <- month(rides_202206$start_datetime) # create month variable
-rides_202206$day <- day(rides_202206$start_datetime) # create day number variable - non leap-year
-rides_202206_v2 <- rides_202206[!(rides_202206$ride_length < 60 | rides_202206$ride_length > 86400),] 
+rides_202206$day <- day(rides_202206$start_datetime) # create day number variable
+rides_202206_v2 <- rides_202206[!(rides_202206$ride_length < 60 | rides_202206$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),] 
 rides_202206_v2 <- rides_202206_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202206)
@@ -142,8 +146,8 @@ rides_202207 %>%
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
 rides_202207$weekday <- wday(rides_202207$start_datetime) # create weekday variable
 rides_202207$month <- month(rides_202207$start_datetime) # create month variable
-rides_202207$day <- day(rides_202207$start_datetime) # create day number variable - non leap-year
-rides_202207_v2 <- rides_202207[!(rides_202207$ride_length < 60 | rides_202207$ride_length > 86400),] 
+rides_202207$day <- day(rides_202207$start_datetime) # create day number variable
+rides_202207_v2 <- rides_202207[!(rides_202207$ride_length < 60 | rides_202207$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),] 
 rides_202207_v2 <- rides_202207_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202207)
@@ -159,8 +163,8 @@ rides_202208 %>%
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
 rides_202208$weekday <- wday(rides_202208$start_datetime) # create weekday variable
 rides_202208$month <- month(rides_202208$start_datetime) # create month variable
-rides_202208$day <- day(rides_202208$start_datetime) # create day number variable - non leap-year
-rides_202208_v2 <- rides_202208[!(rides_202208$ride_length < 60 | rides_202208$ride_length > 86400),] 
+rides_202208$day <- day(rides_202208$start_datetime) # create day number variable
+rides_202208_v2 <- rides_202208[!(rides_202208$ride_length < 60 | rides_202208$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),]
 rides_202208_v2 <- rides_202208_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202208)
@@ -176,8 +180,8 @@ rides_202209 %>%
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
 rides_202209$weekday <- wday(rides_202209$start_datetime) # create weekday variable
 rides_202209$month <- month(rides_202209$start_datetime) # create month variable
-rides_202209$day <- day(rides_202209$start_datetime) # create day number variable - non leap-year
-rides_202209_v2 <- rides_202209[!(rides_202209$ride_length < 60 | rides_202209$ride_length > 86400),] 
+rides_202209$day <- day(rides_202209$start_datetime) # create day number variable
+rides_202209_v2 <- rides_202209[!(rides_202209$ride_length < 60 | rides_202209$ride_length > 86400) | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),] 
 rides_202209_v2 <- rides_202209_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202209)
@@ -193,8 +197,8 @@ rides_202210 %>%
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
 rides_202210$weekday <- wday(rides_202210$start_datetime) # create weekday variable
 rides_202210$month <- month(rides_202210$start_datetime) # create month variable
-rides_202210$day <- day(rides_202210$start_datetime) # create day number variable - non leap-year
-rides_202210_v2 <- rides_202210[!(rides_202210$ride_length < 60 | rides_202210$ride_length > 86400),] 
+rides_202210$day <- day(rides_202210$start_datetime) # create day number variable
+rides_202210_v2 <- rides_202210[!(rides_202210$ride_length < 60 | rides_202210$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),] 
 rides_202210_v2 <- rides_202210_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202210)
@@ -215,7 +219,7 @@ rides_202211 %>%
 rides_202211$weekday <- wday(rides_202211$start_datetime) # create weekday variable
 rides_202211$month <- month(rides_202211$start_datetime) # create month variable
 rides_202211$day <- day(rides_202211$start_datetime) # create day number variable
-rides_202211_v2 <- rides_202211[!(rides_202211$ride_length < 60 | rides_202211$ride_length > 86400 | (rides_202211$start_datetime < '2022-11-06 02:00:00' & rides_202211$end_datetime > '2022-11-06 02:00:00')),] 
+rides_202211_v2 <- rides_202211[!(rides_202211$ride_length < 60 | rides_202211$ride_length > 86400 | (rides_202211$start_datetime < '2022-11-06 02:00:00' & rides_202211$end_datetime > '2022-11-06 02:00:00') | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),] 
 rides_202211_v2 <- rides_202211_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202211)
@@ -231,9 +235,8 @@ rides_202212 %>%
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
 rides_202212$weekday <- wday(rides_202212$start_datetime) # create weekday variable
 rides_202212$month <- month(rides_202212$start_datetime) # create month variable
-rides_202212$day <- day(rides_202212$start_datetime) # create day number variable - non leap-year
-rides_202212_v2 <- rides_202212[!(rides_202212$ride_length < 60 | rides_202212$ride_length > 86400),] 
+rides_202212$day <- day(rides_202212$start_datetime) # create day number variable
+rides_202212_v2 <- rides_202212[!(rides_202212$ride_length < 60 | rides_202212$ride_length > 86400 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),]
 rides_202212_v2 <- rides_202212_v2 %>% 
   select(-c(started_at, ended_at))
 rm(rides_202212)
-
