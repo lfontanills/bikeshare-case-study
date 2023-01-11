@@ -24,3 +24,6 @@ setwd("/Users/laurafontanills/Documents/projects/bikeshare-case-study")
 
 # create a single data frame for all months 2022
 rides_all_2022 <- rbind(rides_202201, rides_202202, rides_202203, rides_202204, rides_202205, rides_202206, rides_202207, rides_202208, rides_202209, rides_202210, rides_202210, rides_202211, rides_202212)
+
+# remove monthly data frames from environment
+rm(rides_202201, rides_202202, rides_202203, rides_202204, rides_202205, rides_202206, rides_202207, rides_202208, rides_202209, rides_202210, rides_202210, rides_202211, rides_202212)
