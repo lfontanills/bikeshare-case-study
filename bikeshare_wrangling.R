@@ -18,3 +18,6 @@ rides_202209 <- read.csv("202209-divvy-tripdata.csv") # September 2022
 rides_202210 <- read.csv("202210-divvy-tripdata.csv") # October 2022
 rides_202211 <- read.csv("202211-divvy-tripdata.csv") # November 2022
 rides_202212 <- read.csv("202212-divvy-tripdata.csv") # December 2022
+
+# change wd to project folder
+setwd("/Users/laurafontanills/Documents/projects/bikeshare-case-study")
