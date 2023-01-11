@@ -1,5 +1,6 @@
 # load packages
 library(tidyverse)
+library(dplyr)
 library(lubridate) # wrangle dates, time
 
 # change wd to access csv files
@@ -27,3 +28,14 @@ rides_all_2022 <- rbind(rides_202201, rides_202202, rides_202203, rides_202204, 
 
 # remove monthly data frames from environment
 rm(rides_202201, rides_202202, rides_202203, rides_202204, rides_202205, rides_202206, rides_202207, rides_202208, rides_202209, rides_202210, rides_202210, rides_202211, rides_202212)
+
+# inspect rides_all_2022 data frame
+head(rides_all_2022)
+str(rides_all_2022)
+
+rides_all_2022 %>% 
+  arrange(started_at)
+
+# change variables to datetime: started_at, ended_at
+rides_all_2022$started_at <- ymd_hms(rides_all_2022$started_at)
+rides_all_2022$ended_at <- ymd_hms(rides_all_2022$ended_at)
