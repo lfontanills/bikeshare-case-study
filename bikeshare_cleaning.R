@@ -4,32 +4,32 @@
 str(rides_202201)
 summary(rides_202201)
 
-# locate row of out of bounds ride
+# locate rows with rides not in Chicago area
 rides_202201 %>% 
-  filter(start_lng > -86) # 1 ride
+  filter(start_lng > -86)
 
 # locate rides with no end_lat
 rides_202201 %>% 
-  filter(is.na(end_lat) | is.na(end_lng)) #86 rides
+  filter(is.na(end_lat) | is.na(end_lng))
 
-# create columns with starting, ending datetimes
+# create columns with starting, ending ride datetimes
 rides_202201$start_datetime <- ymd_hms(rides_202201$started_at)
 rides_202201$end_datetime <- ymd_hms(rides_202201$ended_at)
 
 # create column ride_length (in seconds) as numeric 
-rides_202201$ride_length <- rides_202201$end_datetime - rides_202201$start_datetime
-rides_202201$ride_length <- as.numeric(rides_202201$ride_length)
+rides_202201$ride_length <- as.numeric(rides_202201$end_datetime - rides_202201$start_datetime)
 
-# locate rides with ride_length < 60 or ride_length > 86400
+# locate rides with ride_length < 60 seconds or ride_length > 86400 seconds
 rides_202201 %>% 
-  filter(ride_length < 60 | ride_length > 86400) #1940 rides
+  filter(ride_length < 60 | ride_length > 86400)
+
+# create column for start date only, start time only, start month only 
+rides_202201$ride_date <- as.Date(rides_202201$start_datetime) # Date format
+rides_202201$ride_hour <- hour(rides_202201$start_datetime) # integer
+rides_202201$ride_month <- month(rides_202201$start_datetime, label = TRUE)
 
 # create column for day of week Sunday = 1
 rides_202201$ride_weekday <- wday(rides_202201$start_datetime, label = TRUE)
-
-# create column for month of year, day of month
-rides_202201$ride_month <- month(rides_202201$start_datetime, label = TRUE)
-rides_202201$ride_day <- day(rides_202201$start_datetime)
 
 # create new data frame with cleaned January data
 rides_202201_v2 <- 
