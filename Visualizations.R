@@ -20,6 +20,27 @@ rides_all %>%
   theme_bw() + 
   scale_fill_brewer(palette = "Paired")
 
+# Whole year
+
+rides_all$ride_date <- as.Date(rides_all$start_datetime)
+rides_all %>% 
+  group_by(member_casual, ride_date) %>% 
+  summarize(number_of_rides = n()) %>% 
+  arrange(member_casual, ride_date) %>% 
+  ggplot(aes(x=ride_date, y=number_of_rides, color=member_casual)) +
+  geom_point() + geom_smooth() +
+  labs(
+    title = "Number of rides per day",
+    x = "2022", 
+    y = "Number of rides",
+    color = "User type"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_color_brewer(palette = "Paired")
+
+  
+
 # Public holiday: Jan 2, 16
 rides_202201_v2 %>% 
   group_by(member_casual, ride_day) %>% 
