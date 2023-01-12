@@ -134,4 +134,46 @@ rides_all %>%
   theme_bw() + 
   scale_fill_brewer(palette = "Greens")
 
+# Visualizations for bike types
+
+# Number of rides
+# Visualizations for bike types
+rides_all %>% 
+  group_by(member_casual, rideable_type) %>% 
+  filter(rideable_type != "docked_bike") %>% 
+  summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
+  arrange(member_casual, rideable_type) %>% 
+  ggplot(aes(x=rideable_type, y=number_of_rides, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  labs(
+    title = "Number of rides by bike type",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "Bike type", 
+    y = "Number of rides",
+    fill = "User type"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Purples")
+
+# Median duration
+rides_all %>% 
+  filter(rideable_type != "docked_bike") %>% 
+  group_by(member_casual, rideable_type) %>% 
+  summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
+  arrange(member_casual, rideable_type) %>% 
+  ggplot(aes(x=rideable_type, y=median_duration, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  labs(
+    title = "Median ride duration by bike type",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "Bike type", 
+    y = "Median ride duration (seconds)",
+    fill = "User type"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Purples")
 
