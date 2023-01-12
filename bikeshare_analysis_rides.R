@@ -1,3 +1,4 @@
+# run after bikeshare_cleaning.R
 # Descriptive analysis of ride length, # rides by membership type
 
 # all rider types, all trips

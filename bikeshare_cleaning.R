@@ -1,4 +1,4 @@
-# run after bikeshare_wrangling
+# run after bikeshare_wrangling.R
 
 # inspect January dataframe
 str(rides_202201)

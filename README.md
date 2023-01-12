@@ -2,11 +2,11 @@
 - Source: Coursera Google Data Analytics Certification, Course 8
 - Case study no.1: How does a bike-share navigate speedy success?
 
-## r packages
+## R packages
 - tidyverse (inc. dplyr, ggplot2)
 - lubridate
 
-## data source
+## Data source
 This is a fictional case study. Data is from Chicago's divvy bike-share public data. 
 
 - [Monthly data sets](https://divvy-tripdata.s3.amazonaws.com/index.html)
