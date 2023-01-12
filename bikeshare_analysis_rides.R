@@ -82,10 +82,6 @@ rides_all %>%
 # create summary files
 avg_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday, FUN = mean)
 median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday, FUN = median)
-bike_types <- rides_all %>% 
-  group_by(member_casual, rideable_type, weekday) %>% 
-  summarize(sum(number_of_rides = n()), average_duration = mean(ride_length)) %>% 
-  arrange(member_casual, rideable_type)
 
 # export as csv
 write.csv(avg_ride_length, file = '~/Documents/datasets/avg_ride_length.csv')

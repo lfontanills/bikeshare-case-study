@@ -27,3 +27,9 @@ rides_all %>%
   group_by(member_casual, rideable_type, month) %>% 
   summarize(sum(number_of_rides = n()), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type)
+
+# create summary files
+bike_types <- rides_all %>% 
+  group_by(member_casual, rideable_type, weekday) %>% 
+  summarize(sum(number_of_rides = n()), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, rideable_type)
