@@ -18,31 +18,31 @@ rides_all %>%
 
 # compare bike type, ride length, weekday
 rides_all %>% 
-  group_by(member_casual, rideable_type, weekday) %>% 
+  group_by(member_casual, rideable_type,ride_weekday) %>% 
   summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type)
 
 # compare bike type, ride length, month of year
 rides_all %>% 
-  group_by(member_casual, rideable_type, month) %>% 
+  group_by(member_casual, rideable_type, ride_month) %>% 
   summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type)
 
 # compare bike type, number of rides, weekday
 rides_all %>% 
-  group_by(member_casual, rideable_type, weekday) %>% 
+  group_by(member_casual, rideable_type, ride_weekday) %>% 
   summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type)
 
 # compare bike type, number of rides, month of year
 rides_all %>% 
-  group_by(member_casual, rideable_type, month) %>% 
+  group_by(member_casual, rideable_type, ride_month) %>% 
   summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type) 
 
 # create summary files
 bike_types <- rides_all %>% 
-  group_by(member_casual, rideable_type, weekday, month) %>% 
+  group_by(member_casual, rideable_type, ride_weekday, ride_month) %>% 
   summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type)
 

@@ -25,11 +25,11 @@ rides_202201 %>%
   filter(ride_length < 60 | ride_length > 86400) #1940 rides
 
 # create column for day of week Sunday = 1
-rides_202201$weekday <- wday(rides_202201$start_datetime)
+rides_202201$ride_weekday <- wday(rides_202201$start_datetime)
 
 # create column for month of year, day of month
-rides_202201$month <- month(rides_202201$start_datetime)
-rides_202201$day <- day(rides_202201$start_datetime)
+rides_202201$ride_month <- month(rides_202201$start_datetime)
+rides_202201$ride_day <- day(rides_202201$start_datetime)
 
 # create new data frame with cleaned January data
 rides_202201_v2 <- 
@@ -54,9 +54,9 @@ rides_202202$ride_length <- rides_202202$end_datetime - rides_202202$start_datet
 rides_202202$ride_length <- as.numeric(rides_202202$ride_length) # change ride length to numeric
 rides_202202 %>% 
   filter(ride_length < 60 | ride_length > 86400) #2610 rides
-rides_202202$weekday <- wday(rides_202202$start_datetime) # create weekday variable
-rides_202202$month <- month(rides_202202$start_datetime) # create month variable
-rides_202202$day <- day(rides_202202$start_datetime) # create day number variable - non leap-year
+rides_202202$ride_weekday <- wday(rides_202202$start_datetime) # create weekday variable
+rides_202202$ride_month <- month(rides_202202$start_datetime) # create month variable
+rides_202202$ride_day <- day(rides_202202$start_datetime) # create day number variable - non leap-year
 rides_202202_v2 <- rides_202202[!(rides_202202$ride_length < 60 | rides_202202$ride_length > 86400 | is.na(rides_202202$end_lat) | is.na(rides_202202$end_lng)),]
 rides_202202_v2 <- rides_202202_v2 %>% 
   select(-c(started_at, ended_at))
@@ -78,9 +78,9 @@ rides_202203 %>%
 # cleaning cont'd
 rides_202203 %>% 
   filter(ride_length < 60 | ride_length > 86400) # 5360 rides
-rides_202203$weekday <- wday(rides_202203$start_datetime) # create weekday variable
-rides_202203$month <- month(rides_202203$start_datetime) # create month variable
-rides_202203$day <- day(rides_202203$start_datetime) # create day number variable
+rides_202203$ride_weekday <- wday(rides_202203$start_datetime) # create weekday variable
+rides_202203$ride_month <- month(rides_202203$start_datetime) # create month variable
+rides_202203$ride_day <- day(rides_202203$start_datetime) # create day number variable
 rides_202203_v2 <- rides_202203[!(rides_202203$ride_length < 60 | rides_202203$ride_length > 86400 | is.na(rides_202203$end_lat) | is.na(rides_202203$end_lng)),] 
 rides_202203_v2 <- rides_202203_v2 %>% 
   select(-c(started_at, ended_at))
@@ -97,9 +97,9 @@ rides_202204$ride_length <- rides_202204$end_datetime - rides_202204$start_datet
 rides_202204$ride_length <- as.numeric(rides_202204$ride_length) # change ride length to numeric
 rides_202204 %>% 
   filter(ride_length < 60 | ride_length > 86400) #7619 rides
-rides_202204$weekday <- wday(rides_202204$start_datetime) # create weekday variable
-rides_202204$month <- month(rides_202204$start_datetime) # create month variable
-rides_202204$day <- day(rides_202204$start_datetime) # create day number variable
+rides_202204$ride_weekday <- wday(rides_202204$start_datetime) # create weekday variable
+rides_202204$ride_month <- month(rides_202204$start_datetime) # create month variable
+rides_202204$ride_day <- day(rides_202204$start_datetime) # create day number variable
 rides_202204_v2 <- rides_202204[!(rides_202204$ride_length < 60 | rides_202204$ride_length > 86400 | is.na(rides_202204$end_lat) | is.na(rides_202204$end_lng)),]
 rides_202204_v2 <- rides_202204_v2 %>% 
   select(-c(started_at, ended_at))
@@ -116,9 +116,9 @@ rides_202205$ride_length <- rides_202205$end_datetime - rides_202205$start_datet
 rides_202205$ride_length <- as.numeric(rides_202205$ride_length) # change ride length to numeric
 rides_202205 %>% 
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
-rides_202205$weekday <- wday(rides_202205$start_datetime) # create weekday variable
-rides_202205$month <- month(rides_202205$start_datetime) # create month variable
-rides_202205$day <- day(rides_202205$start_datetime) # create day number variable
+rides_202205$ride_weekday <- wday(rides_202205$start_datetime) # create weekday variable
+rides_202205$ride_month <- month(rides_202205$start_datetime) # create month variable
+rides_202205$ride_day <- day(rides_202205$start_datetime) # create day number variable
 rides_202205_v2 <- rides_202205[!(rides_202205$ride_length < 60 | rides_202205$ride_length > 86400 | is.na(rides_202205$end_lat) | is.na(rides_202205$end_lng)),] 
 rides_202205_v2 <- rides_202205_v2 %>% 
   select(-c(started_at, ended_at))
@@ -135,9 +135,9 @@ rides_202206$ride_length <- rides_202206$end_datetime - rides_202206$start_datet
 rides_202206$ride_length <- as.numeric(rides_202206$ride_length) # change ride length to numeric
 rides_202206 %>% 
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
-rides_202206$weekday <- wday(rides_202206$start_datetime) # create weekday variable
-rides_202206$month <- month(rides_202206$start_datetime) # create month variable
-rides_202206$day <- day(rides_202206$start_datetime) # create day number variable
+rides_202206$ride_weekday <- wday(rides_202206$start_datetime) # create weekday variable
+rides_202206$ride_month <- month(rides_202206$start_datetime) # create month variable
+rides_202206$ride_day <- day(rides_202206$start_datetime) # create day number variable
 rides_202206_v2 <- rides_202206[!(rides_202206$ride_length < 60 | rides_202206$ride_length > 86400 | is.na(rides_202206$end_lat) | is.na(rides_202206$end_lng)),] 
 rides_202206_v2 <- rides_202206_v2 %>% 
   select(-c(started_at, ended_at))
@@ -154,9 +154,9 @@ rides_202207$ride_length <- rides_202207$end_datetime - rides_202207$start_datet
 rides_202207$ride_length <- as.numeric(rides_202207$ride_length) # change ride length to numeric
 rides_202207 %>% 
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
-rides_202207$weekday <- wday(rides_202207$start_datetime) # create weekday variable
-rides_202207$month <- month(rides_202207$start_datetime) # create month variable
-rides_202207$day <- day(rides_202207$start_datetime) # create day number variable
+rides_202207$ride_weekday <- wday(rides_202207$start_datetime) # create weekday variable
+rides_202207$ride_month <- month(rides_202207$start_datetime) # create month variable
+rides_202207$ride_day <- day(rides_202207$start_datetime) # create day number variable
 rides_202207_v2 <- rides_202207[!(rides_202207$ride_length < 60 | rides_202207$ride_length > 86400 | is.na(rides_202207$end_lat) | is.na(rides_202207$end_lng)),] 
 rides_202207_v2 <- rides_202207_v2 %>% 
   select(-c(started_at, ended_at))
@@ -173,9 +173,9 @@ rides_202208$ride_length <- rides_202208$end_datetime - rides_202208$start_datet
 rides_202208$ride_length <- as.numeric(rides_202208$ride_length) # change ride length to numeric
 rides_202208 %>% 
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
-rides_202208$weekday <- wday(rides_202208$start_datetime) # create weekday variable
-rides_202208$month <- month(rides_202208$start_datetime) # create month variable
-rides_202208$day <- day(rides_202208$start_datetime) # create day number variable
+rides_202208$ride_weekday <- wday(rides_202208$start_datetime) # create weekday variable
+rides_202208$ride_month <- month(rides_202208$start_datetime) # create month variable
+rides_202208$ride_day <- day(rides_202208$start_datetime) # create day number variable
 rides_202208_v2 <- rides_202208[!(rides_202208$ride_length < 60 | rides_202208$ride_length > 86400 | is.na(rides_202208$end_lat) | is.na(rides_202208$end_lng)),]
 rides_202208_v2 <- rides_202208_v2 %>% 
   select(-c(started_at, ended_at))
@@ -192,9 +192,9 @@ rides_202209$ride_length <- rides_202209$end_datetime - rides_202209$start_datet
 rides_202209$ride_length <- as.numeric(rides_202209$ride_length) # change ride length to numeric
 rides_202209 %>% 
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
-rides_202209$weekday <- wday(rides_202209$start_datetime) # create weekday variable
-rides_202209$month <- month(rides_202209$start_datetime) # create month variable
-rides_202209$day <- day(rides_202209$start_datetime) # create day number variable
+rides_202209$ride_weekday <- wday(rides_202209$start_datetime) # create weekday variable
+rides_202209$ride_month <- month(rides_202209$start_datetime) # create month variable
+rides_202209$ride_day <- day(rides_202209$start_datetime) # create day number variable
 rides_202209_v2 <- rides_202209[!(rides_202209$ride_length < 60 | rides_202209$ride_length > 86400 | is.na(rides_202209$end_lat) | is.na(rides_202209$end_lng)),] 
 rides_202209_v2 <- rides_202209_v2 %>% 
   select(-c(started_at, ended_at))
@@ -211,9 +211,9 @@ rides_202210$ride_length <- rides_202210$end_datetime - rides_202210$start_datet
 rides_202210$ride_length <- as.numeric(rides_202210$ride_length) # change ride length to numeric
 rides_202210 %>% 
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
-rides_202210$weekday <- wday(rides_202210$start_datetime) # create weekday variable
-rides_202210$month <- month(rides_202210$start_datetime) # create month variable
-rides_202210$day <- day(rides_202210$start_datetime) # create day number variable
+rides_202210$ride_weekday <- wday(rides_202210$start_datetime) # create weekday variable
+rides_202210$ride_month <- month(rides_202210$start_datetime) # create month variable
+rides_202210$ride_day <- day(rides_202210$start_datetime) # create day number variable
 rides_202210_v2 <- rides_202210[!(rides_202210$ride_length < 60 | rides_202210$ride_length > 86400 | is.na(rides_202210$end_lat) | is.na(rides_202210$end_lng)),] 
 rides_202210_v2 <- rides_202210_v2 %>% 
   select(-c(started_at, ended_at))
@@ -234,9 +234,9 @@ rides_202211 %>%
 # cleaning cont'd
 rides_202211 %>% 
   filter(ride_length < 60 | ride_length > 86400) # 5360 rides
-rides_202211$weekday <- wday(rides_202211$start_datetime) # create weekday variable
-rides_202211$month <- month(rides_202211$start_datetime) # create month variable
-rides_202211$day <- day(rides_202211$start_datetime) # create day number variable
+rides_202211$ride_weekday <- wday(rides_202211$start_datetime) # create weekday variable
+rides_202211$ride_month <- month(rides_202211$start_datetime) # create month variable
+rides_202211$ride_day <- day(rides_202211$start_datetime) # create day number variable
 rides_202211_v2 <- rides_202211[!(rides_202211$ride_length < 60 | rides_202211$ride_length > 86400 | (rides_202211$start_datetime < '2022-11-06 02:00:00' & rides_202211$end_datetime > '2022-11-06 02:00:00') | is.na(rides_202211$end_lat) | is.na(rides_202211$end_lng)),] 
 rides_202211_v2 <- rides_202211_v2 %>% 
   select(-c(started_at, ended_at))
@@ -253,9 +253,9 @@ rides_202212$ride_length <- rides_202212$end_datetime - rides_202212$start_datet
 rides_202212$ride_length <- as.numeric(rides_202212$ride_length) # change ride length to numeric
 rides_202212 %>% 
   filter(ride_length < 60 | ride_length > 86400) #13076 rides
-rides_202212$weekday <- wday(rides_202212$start_datetime) # create weekday variable
-rides_202212$month <- month(rides_202212$start_datetime) # create month variable
-rides_202212$day <- day(rides_202212$start_datetime) # create day number variable
+rides_202212$ride_weekday <- wday(rides_202212$start_datetime) # create weekday variable
+rides_202212$ride_month <- month(rides_202212$start_datetime) # create month variable
+rides_202212$ride_day <- day(rides_202212$start_datetime) # create day number variable
 rides_202212_v2 <- rides_202212[!(rides_202212$ride_length < 60 | rides_202212$ride_length > 86400 | is.na(rides_202212$end_lat) | is.na(rides_202212$end_lng)),]
 rides_202212_v2 <- rides_202212_v2 %>% 
   select(-c(started_at, ended_at))
