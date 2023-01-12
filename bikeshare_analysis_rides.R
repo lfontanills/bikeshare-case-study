@@ -80,7 +80,7 @@ rides_all %>%
   summarize(sum(number_of_rides = n()), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type)
   
-# create summary files
+# create summary data frames
 avg_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday + rides_all$month + rides_all$rideable_type, FUN = mean)
 median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday + rides_all$month + rides_all$rideable_type, FUN = median)
 
