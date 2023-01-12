@@ -188,4 +188,3 @@ rides_all %>%
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Purples")
-
