@@ -86,7 +86,7 @@ rides_all %>%
   facet_wrap(~member_casual) +
   geom_col(position = "dodge")
 
-# Summarize number of rides per bike type by user type over each weeday
+# Summarize number of rides per bike type by user type over each weekday
 # Note - filtering out docked_bike
 rides_all %>% 
   filter(rideable_type != "docked_bike") %>% 
