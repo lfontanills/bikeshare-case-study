@@ -77,6 +77,7 @@ rides_all %>%
 
 # Summarize number of rides per bike type by user type over each month
 # Note - filtering out docked_bike
+# Note - visualizing takes forever, not useful
 rides_all %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, rideable_type, ride_month) %>% 
@@ -88,6 +89,7 @@ rides_all %>%
 
 # Summarize number of rides per bike type by user type over each weekday
 # Note - filtering out docked_bike
+# Note - visualizing takes forever, not useful
 rides_all %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, rideable_type, ride_weekday) %>% 
