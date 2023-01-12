@@ -263,3 +263,6 @@ rm(rides_202212)
 
 # create a data frame combining months into a single year
 rides_all <- rbind(rides_202201_v2, rides_202202_v2, rides_202203_v2, rides_202204_v2, rides_202205_v2, rides_202206_v2, rides_202207_v2, rides_202208_v2, rides_202209_v2, rides_202210_v2, rides_202211_v2, rides_202212_v2)
+
+# export rides_all as csv
+write.csv(rides_all, file = "~/Documents/datasets/rides_all.csv")
