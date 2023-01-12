@@ -39,12 +39,26 @@ rides_all %>%
   theme_bw() + 
   scale_color_brewer(palette = "Paired")
 
-  
-
-# Public holiday: Jan 2, 16
-rides_202201_v2 %>% 
-  group_by(member_casual, ride_day) %>% 
+# Public holiday: May 29 - Sunday
+rides_202205_v2 %>% 
+  group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
-  arrange(member_casual, ride_day) %>% 
-  ggplot(aes(x=ride_day, y=number_of_rides, fill=member_casual)) +
+  arrange(member_casual, ride_weekday) %>% 
+  ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
+  geom_col(position = "dodge")
+
+# Public holiday: July 4 - Monday
+rides_202207_v2 %>% 
+  group_by(member_casual, ride_weekday) %>% 
+  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, ride_weekday) %>% 
+  ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
+  geom_col(position = "dodge")
+
+# Public holiday: September 4 - Monday
+rides_202210_v2 %>% 
+  group_by(member_casual, ride_weekday) %>% 
+  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, ride_weekday) %>% 
+  ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
   geom_col(position = "dodge")
