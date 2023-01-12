@@ -334,7 +334,7 @@ rides_2022010_v2 <- rides_202210[!(rides_202210$ride_length < 60 |  # filter out
                                     is.na(rides_202210$end_lat) |  # filter out rides with no end latitude
                                     is.na(rides_202210$end_lng)), # filter out rides with no end longitude
 ]
-rides_2022010_v2 <- rides_2022010_v2 %>% 
+rides_202210_v2 <- rides_202210_v2 %>% 
   select(-c(started_at, ended_at)) # remove started_at, ended_at columns
 
 rm(rides_202210) # remove old data frame
@@ -398,18 +398,30 @@ rides_202212$ride_hour <- hour(rides_202212$start_datetime) # hour as integer
 rides_202212$ride_month <- month(rides_202212$start_datetime, label = TRUE) # month as ord factor w/ 12 levels
 rides_202212$ride_weekday <- wday(rides_202212$start_datetime, label = TRUE) # weekday  as ord factor w/ 7 levels
 
-rides_2022012_v2 <- rides_202212[!(rides_202212$ride_length < 60 |  # filter out too-short rides
+rides_202212_v2 <- rides_202212[!(rides_202212$ride_length < 60 |  # filter out too-short rides
                                      rides_202212$ride_length > 86400 | # filter out too-long rides
                                      is.na(rides_202212$end_lat) |  # filter out rides with no end latitude
                                      is.na(rides_202212$end_lng)), # filter out rides with no end longitude
 ]
-rides_2022012_v2 <- rides_2022012_v2 %>% 
+rides_202212_v2 <- rides_202212_v2 %>% 
   select(-c(started_at, ended_at)) # remove started_at, ended_at columns
 
 rm(rides_202212) # remove old data frame
 
 # create a data frame combining months into a single year
-rides_all <- rbind(rides_202201_v2, rides_202202_v2, rides_202203_v2, rides_202204_v2, rides_202205_v2, rides_202206_v2, rides_202207_v2, rides_202208_v2, rides_202209_v2, rides_202210_v2, rides_202211_v2, rides_202212_v2)
+rides_all <- rbind(rides_202201_v2,
+                   rides_202202_v2,
+                   rides_202203_v2,
+                   rides_202204_v2, 
+                   rides_202205_v2, 
+                   rides_202206_v2,
+                   rides_202207_v2, 
+                   rides_202208_v2, 
+                   rides_202209_v2, 
+                   rides_202210_v2, 
+                   rides_202211_v2, 
+                   rides_202212_v2
+                   )
 
 # export rides_all as csv
 write.csv(rides_all, file = "~/Documents/datasets/rides_all.csv")
