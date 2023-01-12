@@ -86,4 +86,3 @@ median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual 
 # export as csv
 write.csv(avg_ride_length, file = '~/Documents/datasets/avg_ride_length.csv')
 write.csv(median_ride_length, file = '~/Documents/datasets/median_ride_length.csv')
-write.csv(bike_types, file = '~/Documents/datasets/bike_types.csv')

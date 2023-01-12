@@ -33,3 +33,6 @@ bike_types <- rides_all %>%
   group_by(member_casual, rideable_type, weekday) %>% 
   summarize(sum(number_of_rides = n()), average_duration = mean(ride_length)) %>% 
   arrange(member_casual, rideable_type)
+
+# create csv
+write.csv(bike_types, file = '~/Documents/datasets/bike_types.csv')
