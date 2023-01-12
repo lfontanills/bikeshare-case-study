@@ -1,58 +1,65 @@
 # run after bikeshare_cleaning.R
-# Descriptive analysis of ride length, # rides by membership type
+str(rides_all)
 
-# all rider types, all trips
-summary(rides_all$ride_length)
 
-# compare members and casual users
+# Descriptive analysis of NO. OF RIDES by user type (member_casual)
+
+# Summarize number of rides each month (quick visualization)
+rides_all %>% 
+  group_by(ride_month, member_casual) %>% 
+  summarize(total_count=n()) %>% 
+  ggplot(aes(x=ride_month, y=total_count, fill=member_casual)) +
+  geom_col(position = "dodge")
+
+# Summarize number of rides each weekday (quick visualization)
+rides_all %>% 
+  group_by(ride_weekday, member_casual) %>% 
+  summarize(total_count=n()) %>% 
+  ggplot(aes(x=ride_weekday, y=total_count, fill=member_casual)) +
+  geom_col(position = "dodge")
+
+# Summarize number of rides each hour (quick visualization)
+rides_all %>% 
+  group_by(ride_hour, member_casual) %>% 
+  summarize(total_count=n()) %>% 
+  ggplot(aes(x=ride_hour, y=total_count, fill=member_casual)) +
+  geom_col(position = "dodge") + geom_smooth()
+
+
+
+# Descriptive analysis of RIDE DURATION by user type (member_casual)
+
+# Quick look - compare ride duration over the entire year
 aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = mean)
 aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = median)
-aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = max)
-aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = min)
+aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = max) 
+aggregate(rides_all$ride_length ~ rides_all$member_casual, FUN = min) 
 
-# compare average ride time per day of week
-aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$ride_weekday, FUN = mean)
-
-# compare average ride time by day of month
-aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$ride_day, FUN = mean)
-
-# compare average ride time by month
-aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$ride_month, FUN = mean)
-
-# compare ridership by weekday, create visualization
+# Summarize ride duration each month (quick visualization)
 rides_all %>% 
-  group_by(member_casual, ride_weekday) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
-  arrange(member_casual, ride_weekday) %>% 
-  ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
+  group_by(ride_month, member_casual) %>% 
+  summarize(median_ride_length = median(ride_length)) %>% 
+  ggplot(aes(x=ride_month, y=median_ride_length, fill=member_casual)) +
   geom_col(position = "dodge")
 
-# compare ridership by month, create visualization
+# Summarize ride duration each weekday (quick visualization)
 rides_all %>% 
-  group_by(member_casual, ride_month) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
-  arrange(member_casual, ride_month) %>% 
-  ggplot(aes(x=ride_month, y=number_of_rides, fill=member_casual)) +
+  group_by(ride_weekday, member_casual) %>% 
+  summarize(median_ride_length = median(ride_length)) %>% 
+  ggplot(aes(x=ride_weekday, y=median_ride_length, fill=member_casual)) +
   geom_col(position = "dodge")
 
-# compare ride length by weekday, create visualization
+# Summarize ride duration each hour (quick visualization)
 rides_all %>% 
-  group_by(member_casual, ride_weekday) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
-  arrange(member_casual, ride_weekday) %>% 
-  ggplot(aes(x=ride_weekday, y=average_duration, fill=member_casual)) +
-  geom_col(position = "dodge")
-
-# compare ride length by month, create visualization
-rides_all %>% 
-  group_by(member_casual, ride_month) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
-  arrange(member_casual, ride_month) %>% 
-  ggplot(aes(x=ride_month, y=average_duration, fill=member_casual)) +
+  group_by(ride_hour, member_casual) %>% 
+  summarize(median_ride_length = median(ride_length)) %>% 
+  ggplot(aes(x=ride_hour, y=median_ride_length, fill=member_casual)) +
   geom_col(position = "dodge")
 
 
-# compare bike types, ride length
+
+
+# compare bike types, ride length, create quick visualization
 rides_all %>% 
   group_by(member_casual, rideable_type) %>% 
   summarize(sum(number_of_rides = n()), average_duration = mean(ride_length)) %>% 
@@ -60,7 +67,7 @@ rides_all %>%
   ggplot(aes(x=rideable_type, y=average_duration, fill=member_casual)) +
   geom_col(position = "dodge")
 
-# compare bike types, number of rides
+# compare bike types, number of rides,create quick visualization
 rides_all %>% 
   group_by(member_casual, rideable_type) %>% 
   summarize(number_of_rides = n()) %>% 
