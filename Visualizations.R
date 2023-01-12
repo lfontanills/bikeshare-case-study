@@ -146,14 +146,15 @@ rides_all %>%
 # Visualizations for bike types
 
 # Number of rides
-# Visualizations for bike types
+# Visualizations for bike types by month
 rides_all %>% 
   group_by(member_casual, rideable_type) %>% 
   filter(rideable_type != "docked_bike") %>% 
-  summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
+  summarize(number_of_rides = n(), ride_month) %>% 
   arrange(member_casual, rideable_type) %>% 
   ggplot(aes(x=rideable_type, y=number_of_rides, fill=member_casual)) +
   geom_col(position = "dodge") +
+  facet_wrap(~ride_month)+
   coord_flip() +
   labs(
     title = "Number of rides by bike type",
