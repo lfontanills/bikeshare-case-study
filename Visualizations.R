@@ -5,6 +5,7 @@
 
 # Month-to-month
 rides_all %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_month) %>% 
   summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_month) %>% 
@@ -23,6 +24,7 @@ rides_all %>%
 # Whole year
 rides_all$ride_date <- as.Date(rides_all$start_datetime)
 rides_all %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_date) %>% 
   summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_date) %>% 
@@ -40,6 +42,7 @@ rides_all %>%
 
 # By day of week
 rides_all %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_weekday) %>% 
@@ -57,6 +60,7 @@ rides_all %>%
 
 # Public holiday: May 29 - Sunday
 rides_202205_v2 %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_weekday) %>% 
@@ -65,6 +69,7 @@ rides_202205_v2 %>%
 
 # Public holiday: July 4 - Monday
 rides_202207_v2 %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_weekday) %>% 
@@ -73,6 +78,7 @@ rides_202207_v2 %>%
 
 # Public holiday: September 4 - Monday
 rides_202210_v2 %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_weekday) %>% 
@@ -82,6 +88,7 @@ rides_202210_v2 %>%
 # Visualizations for ride duration
 # Month-to-month
 rides_all %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_month) %>% 
   summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
   arrange(member_casual, ride_month) %>% 
@@ -100,6 +107,7 @@ rides_all %>%
 
 # Whole year
 rides_all %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_date) %>% 
   summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
   arrange(member_casual, ride_date) %>% 
@@ -118,6 +126,7 @@ rides_all %>%
 
 # By day of week
 rides_all %>% 
+  filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
   arrange(member_casual, ride_weekday) %>% 
@@ -153,6 +162,7 @@ rides_all %>%
     y = "Number of rides",
     fill = "User type"
   ) +
+  scale_x_discrete(labels = c("classic bike", "electric bike")) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Purples")
@@ -173,6 +183,7 @@ rides_all %>%
     y = "Median ride duration (seconds)",
     fill = "User type"
   ) +
+  scale_x_discrete(labels = c("classic bike", "electric bike")) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Purples")
