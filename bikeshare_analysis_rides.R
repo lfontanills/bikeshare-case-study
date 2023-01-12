@@ -1,4 +1,4 @@
-# Descriptive analysis of ride length by membership type
+# Descriptive analysis of ride length, # rides by membership type
 
 # all rider types, all trips
 summary(rides_all$ride_length)
@@ -80,8 +80,8 @@ rides_all %>%
   arrange(member_casual, rideable_type)
   
 # create summary files
-avg_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday, FUN = mean)
-median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday, FUN = median)
+avg_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday + rides_all$month + rides_all$rideable_type, FUN = mean)
+median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$weekday + rides_all$month + rides_all$rideable_type, FUN = median)
 
 # export as csv
 write.csv(avg_ride_length, file = '~/Documents/datasets/avg_ride_length.csv')
