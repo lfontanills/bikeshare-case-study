@@ -1,5 +1,7 @@
 # run after bikeshare_wrangling.R
 
+
+
 # inspect January data frame
 str(rides_202201)
 summary(rides_202201)
@@ -329,7 +331,7 @@ rides_202210$ride_hour <- hour(rides_202210$start_datetime) # hour as integer
 rides_202210$ride_month <- month(rides_202210$start_datetime, label = TRUE) # month as ord factor w/ 12 levels
 rides_202210$ride_weekday <- wday(rides_202210$start_datetime, label = TRUE) # weekday  as ord factor w/ 7 levels
 
-rides_2022010_v2 <- rides_202210[!(rides_202210$ride_length < 60 |  # filter out too-short rides
+rides_202210_v2 <- rides_202210[!(rides_202210$ride_length < 60 |  # filter out too-short rides
                                     rides_202210$ride_length > 86400 | # filter out too-long rides
                                     is.na(rides_202210$end_lat) |  # filter out rides with no end latitude
                                     is.na(rides_202210$end_lng)), # filter out rides with no end longitude
