@@ -1,6 +1,6 @@
 # run after bikeshare_wrangling.R
 
-# inspect January dataframe
+# inspect January data frame
 str(rides_202201)
 summary(rides_202201)
 
@@ -8,7 +8,7 @@ summary(rides_202201)
 rides_202201 %>% 
   filter(start_lng > -86)
 
-# locate rides with no end_lat
+# locate rides with no end coordinates
 rides_202201 %>% 
   filter(is.na(end_lat) | is.na(end_lng))
 
@@ -28,7 +28,7 @@ rides_202201$ride_date <- as.Date(rides_202201$start_datetime) # Date format
 rides_202201$ride_hour <- hour(rides_202201$start_datetime) # integer
 rides_202201$ride_month <- month(rides_202201$start_datetime, label = TRUE)
 
-# create column for day of week Sunday = 1
+# create column for weekdays
 rides_202201$ride_weekday <- wday(rides_202201$start_datetime, label = TRUE)
 
 # create new data frame with cleaned January data
@@ -40,51 +40,78 @@ rides_202201_v2 <-
   rides_202201_v2 %>% 
  select(-c(started_at, ended_at))
 
-# remove original df
+# remove old df
 rm(rides_202201)
 
-# repeat for February
+
+# could loop over rest of months or inspect each month individually
+
+
+# inspect February data frame
 str(rides_202202)
-summary(rides_202202) # check for outliers
-rides_202202 %>% 
+summary(rides_202202)
+
+rides_202202 %>% # locate rides with no end coordinates
   filter(is.na(end_lat) | is.na(end_lng))
+
 rides_202202$start_datetime <- ymd_hms(rides_202202$started_at) # create start datetime variable
 rides_202202$end_datetime <- ymd_hms(rides_202202$ended_at) # create end datetime variable
-rides_202202$ride_length <- rides_202202$end_datetime - rides_202202$start_datetime # calculate ride length in seconds
-rides_202202$ride_length <- as.numeric(rides_202202$ride_length) # change ride length to numeric
-rides_202202 %>% 
-  filter(ride_length < 60 | ride_length > 86400) #2610 rides
-rides_202202$ride_weekday <- wday(rides_202202$start_datetime, label = TRUE) # create weekday variable
-rides_202202$ride_month <- month(rides_202202$start_datetime, label = TRUE) # create month variable
-rides_202202$ride_day <- day(rides_202202$start_datetime) # create day number variable - non leap-year
-rides_202202_v2 <- rides_202202[!(rides_202202$ride_length < 60 | rides_202202$ride_length > 86400 | is.na(rides_202202$end_lat) | is.na(rides_202202$end_lng)),]
-rides_202202_v2 <- rides_202202_v2 %>% 
-  select(-c(started_at, ended_at))
-rm(rides_202202)
 
-# repeat for March
+rides_202202$ride_length <- as.numeric(rides_202202$end_datetime - rides_202202$start_datetime) # create column ride_length (in seconds) as numeric 
+
+rides_202202 %>% 
+  filter(ride_length < 60 | ride_length > 86400) # filter out too-short, too-long rides
+
+rides_202202$ride_date <- as.Date(rides_202202$start_datetime) # Date format
+rides_202202$ride_hour <- hour(rides_202202$start_datetime) # hour as integer
+rides_202202$ride_month <- month(rides_202202$start_datetime, label = TRUE) # month as ord factor w/ 12 levels
+rides_202202$ride_weekday <- wday(rides_202202$start_datetime, label = TRUE) # weekday  as ord factor w/ 7 levels
+
+rides_202202_v2 <- rides_202202[!(rides_202202$ride_length < 60 |  # filter out too-short rides
+                                    rides_202202$ride_length > 86400 | # filter out too-long rides
+                                    is.na(rides_202202$end_lat) |  # filter out rides with no end latitude
+                                    is.na(rides_202202$end_lng)), # filter out rides with no end longitude
+                                ]
+rides_202202_v2 <- rides_202202_v2 %>% 
+  select(-c(started_at, ended_at)) # remove started_at, ended_at columns
+
+rm(rides_202202) # remove old data frame
+
+
+# inspect March data frame
 str(rides_202203)
-summary(rides_202203) # check for outliers
-rides_202203 %>% 
+summary(rides_202203)
+
+rides_202203 %>% # locate rides with no end coordinates
   filter(is.na(end_lat) | is.na(end_lng))
+
 rides_202203$start_datetime <- ymd_hms(rides_202203$started_at) # create start datetime variable
 rides_202203$end_datetime <- ymd_hms(rides_202203$ended_at) # create end datetime variable
-rides_202203$ride_length <- rides_202203$end_datetime - rides_202203$start_datetime # calculate ride length in seconds
-rides_202203$ride_length <- as.numeric(rides_202203$ride_length) # change ride length to numeric
-# find rides that start before 2AM and end after 3AM 03/13/2022
+rides_202203$ride_length <- as.numeric(rides_202203$end_datetime - rides_202203$start_datetime) # create column ride_length (in seconds) as numeric 
+
+# Account for DST: find rides that start before 2AM and end after 3AM 03/13/2022
 rides_202203 %>% 
   filter(start_datetime <= '2022-03-13 02:00:00' & end_datetime >= '2022-03-13 03:00:00') %>%
-  mutate(ride_length = ride_length - 360) # subtract 1 hour from those rides
-# cleaning cont'd
+  mutate(ride_length = ride_length - 360) # subtract 1 hour from ride durations
+
+# March cleaning cont'd
 rides_202203 %>% 
-  filter(ride_length < 60 | ride_length > 86400) # 5360 rides
-rides_202203$ride_weekday <- wday(rides_202203$start_datetime, label = TRUE) # create weekday variable
-rides_202203$ride_month <- month(rides_202203$start_datetime, label = TRUE) # create month variable
-rides_202203$ride_day <- day(rides_202203$start_datetime) # create day number variable
-rides_202203_v2 <- rides_202203[!(rides_202203$ride_length < 60 | rides_202203$ride_length > 86400 | is.na(rides_202203$end_lat) | is.na(rides_202203$end_lng)),] 
+  filter(ride_length < 60 | ride_length > 86400) # filter out too-short, too-long rides
+
+rides_202203$ride_date <- as.Date(rides_202203$start_datetime) # Date format
+rides_202203$ride_hour <- hour(rides_202203$start_datetime) # hour as integer
+rides_202203$ride_month <- month(rides_202203$start_datetime, label = TRUE) # month as ord factor w/ 12 levels
+rides_202203$ride_weekday <- wday(rides_202203$start_datetime, label = TRUE) # weekday  as ord factor w/ 7 levels
+
+rides_202203_v2 <- rides_202203[!(rides_202203$ride_length < 60 |  # filter out too-short rides
+                                    rides_202203$ride_length > 86400 | # filter out too-long rides
+                                    is.na(rides_202203$end_lat) | # filter out rides with no end latitude
+                                    is.na(rides_202203$end_lng)),]  # filter out rides with no end longitude
+
 rides_202203_v2 <- rides_202203_v2 %>% 
-  select(-c(started_at, ended_at))
-rm(rides_202203)
+  select(-c(started_at, ended_at)) # remove started_at, ended_at columns
+
+rm(rides_202203)  # remove old data frame
 
 # repeat for April
 str(rides_202204)
