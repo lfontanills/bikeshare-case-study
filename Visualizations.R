@@ -6,7 +6,7 @@
 # Month-to-month
 rides_all %>% 
   group_by(member_casual, ride_month) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_month) %>% 
   ggplot(aes(x=ride_month, y=number_of_rides, fill=member_casual)) +
   geom_col(position = "dodge") +
@@ -21,7 +21,6 @@ rides_all %>%
   scale_fill_brewer(palette = "Paired")
 
 # Whole year
-
 rides_all$ride_date <- as.Date(rides_all$start_datetime)
 rides_all %>% 
   group_by(member_casual, ride_date) %>% 
@@ -39,10 +38,27 @@ rides_all %>%
   theme_bw() + 
   scale_color_brewer(palette = "Paired")
 
+# By day of week
+rides_all %>% 
+  group_by(member_casual, ride_weekday) %>% 
+  summarize(number_of_rides = n()) %>% 
+  arrange(member_casual, ride_weekday) %>% 
+  ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Number of rides per weekday",
+    x = "Day of week", 
+    y = "Number of rides",
+    fill = "User type"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Paired")
+
 # Public holiday: May 29 - Sunday
 rides_202205_v2 %>% 
   group_by(member_casual, ride_weekday) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_weekday) %>% 
   ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
   geom_col(position = "dodge")
@@ -50,7 +66,7 @@ rides_202205_v2 %>%
 # Public holiday: July 4 - Monday
 rides_202207_v2 %>% 
   group_by(member_casual, ride_weekday) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_weekday) %>% 
   ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
   geom_col(position = "dodge")
@@ -58,7 +74,64 @@ rides_202207_v2 %>%
 # Public holiday: September 4 - Monday
 rides_202210_v2 %>% 
   group_by(member_casual, ride_weekday) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  summarize(number_of_rides = n()) %>% 
   arrange(member_casual, ride_weekday) %>% 
   ggplot(aes(x=ride_weekday, y=number_of_rides, fill=member_casual)) +
   geom_col(position = "dodge")
+
+# Visualizations for ride duration
+# Month-to-month
+rides_all %>% 
+  group_by(member_casual, ride_month) %>% 
+  summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
+  arrange(member_casual, ride_month) %>% 
+  ggplot(aes(x=ride_month, y=median_duration, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Median ride duration",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "Month", 
+    y = "Median ride duration (seconds)",
+    fill = "User type"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens")
+
+# Whole year
+rides_all %>% 
+  group_by(member_casual, ride_date) %>% 
+  summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
+  arrange(member_casual, ride_date) %>% 
+  ggplot(aes(x=ride_date, y=median_duration, color=member_casual)) +
+  geom_point() + geom_smooth() +
+  labs(
+    title = "Median ride duration",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "Month", 
+    y = "Median ride duration (seconds)",
+    fill = "User type"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_color_brewer(palette = "Greens")
+
+# By day of week
+rides_all %>% 
+  group_by(member_casual, ride_weekday) %>% 
+  summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
+  arrange(member_casual, ride_weekday) %>% 
+  ggplot(aes(x=ride_weekday, y=median_duration, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Median ride duration",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "Month", 
+    y = "Median ride duration (seconds)",
+    fill = "User type"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens")
+
+
