@@ -57,6 +57,7 @@ rides_all %>%
   geom_col(position = "dodge")
 
 
+
 # Descriptive analysis of BIKE TYPES by user type (member_casual)
 
 # Summarize number of rides per bike type by user type over the entire year
@@ -99,23 +100,11 @@ rides_all %>%
   facet_wrap(~member_casual) +
   geom_col(position = "dodge")
 
+# Subset ride time, types from rides_all and export as csv
+colnames(rides_all)
+rides_subset <- rides_all[,c(2, 11:18)]
+write_csv(rides_subset, file = "~/Documents/datasets/rides_subset.csv")
 
-
-
-  
-# create summary data frames
-median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + 
-                                  rides_all$ride_weekday + 
-                                  rides_all$ride_month + 
-                                  rides_all$rideable_type, 
-                                FUN = median)
-# create summary files
-bike_types <- rides_all %>% 
-  group_by(member_casual, rideable_type, ride_weekday, ride_month) %>% 
-  summarize(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
-  arrange(member_casual, rideable_type)
-
-# export as csv
-write.csv(avg_ride_length, file = '~/Documents/datasets/avg_ride_length.csv')
-write.csv(median_ride_length, file = '~/Documents/datasets/median_ride_length.csv')
-write.csv(bike_types, file = '~/Documents/datasets/bike_types.csv')
+# Subset location data and export as csv
+colnames(rides_all)
+rides_location <- rides_all[,c(3:12)]
