@@ -425,4 +425,4 @@ rides_all <- rbind(rides_202201_v2,
                    rides_202210_v2, 
                    rides_202211_v2, 
                    rides_202212_v2)
-write.csv(rides_all, file = "~/Documents/datasets/rides_all.csv")
+# write.csv(rides_all, file = "~/Documents/datasets/rides_all.csv")
