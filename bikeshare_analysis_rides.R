@@ -103,11 +103,39 @@ rides_all %>%
 
 
 ###
+# Find top 10 start, end locations by user type
+rides_all %>% 
+  filter(member_casual == "casual") %>% 
+  group_by(member_casual, start_station_name) %>% 
+  summarize(total_count = n()) %>% 
+  arrange(desc(total_count))
+
+rides_all %>% 
+  filter(member_casual == "member") %>% 
+  group_by(member_casual, start_station_name) %>% 
+  summarize(total_count = n()) %>% 
+  arrange(desc(total_count))
+
+rides_all %>% 
+  filter(member_casual == "casual") %>% 
+  group_by(member_casual, end_station_name) %>% 
+  summarize(total_count = n()) %>% 
+  arrange(desc(total_count))
+
+rides_all %>% 
+  filter(member_casual == "member") %>% 
+  group_by(member_casual, end_station_name) %>% 
+  summarize(total_count = n()) %>% 
+  arrange(desc(total_count))
+
+
+###
 # Subset ride time, types from rides_all and export as csv
 colnames(rides_all)
 rides_subset <- rides_all[,c(2, 11:18)]
-write_csv(rides_subset, file = "~/Documents/datasets/rides_subset.csv")
+# write_csv(rides_subset, file = "~/Documents/datasets/rides_subset.csv")
 
 # Subset location data and export as csv
 colnames(rides_all)
 rides_location <- rides_all[,c(3:12)]
+# write_csv(rides_location, file = "~/Documents/datasets/rides_location.csv")
