@@ -2,6 +2,7 @@
 str(rides_all)
 
 
+###
 # Descriptive analysis of NO. OF RIDES by user type (member_casual)
 
 # Summarize number of rides each month (quick visualization)
@@ -26,7 +27,7 @@ rides_all %>%
   geom_col(position = "dodge") + geom_smooth()
 
 
-
+###
 # Descriptive analysis of RIDE DURATION by user type (member_casual)
 
 # Quick look - compare ride duration over the entire year
@@ -57,7 +58,7 @@ rides_all %>%
   geom_col(position = "dodge")
 
 
-
+###
 # Descriptive analysis of BIKE TYPES by user type (member_casual)
 
 # Summarize number of rides per bike type by user type over the entire year
@@ -100,6 +101,8 @@ rides_all %>%
   facet_wrap(~member_casual) +
   geom_col(position = "dodge")
 
+
+###
 # Subset ride time, types from rides_all and export as csv
 colnames(rides_all)
 rides_subset <- rides_all[,c(2, 11:18)]

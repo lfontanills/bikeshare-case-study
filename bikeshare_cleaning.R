@@ -1,7 +1,7 @@
 # run after bikeshare_wrangling.R
 
 
-
+###
 # inspect January data frame
 str(rides_202201)
 summary(rides_202201)
@@ -46,11 +46,11 @@ rides_202201_v2 <-
 rm(rides_202201)
 
 
-
+###
 # could loop over rest of months or inspect each month individually
 
 
-
+###
 # inspect February data frame
 str(rides_202202)
 summary(rides_202202)
@@ -82,7 +82,7 @@ rides_202202_v2 <- rides_202202_v2 %>%
 rm(rides_202202) # remove old data frame
 
 
-
+###
 # inspect March data frame
 str(rides_202203)
 summary(rides_202203)
@@ -119,7 +119,7 @@ rides_202203_v2 <- rides_202203_v2 %>%
 rm(rides_202203)  # remove old data frame
 
 
-
+###
 # inspect April data frame
 str(rides_202204)
 summary(rides_202204)
@@ -151,7 +151,7 @@ rides_202204_v2 <- rides_202204_v2 %>%
 rm(rides_202204) # remove old data frame
 
 
-
+###
 # inspect May data frame
 str(rides_202205)
 summary(rides_202205)
@@ -183,7 +183,7 @@ rides_202205_v2 <- rides_202205_v2 %>%
 rm(rides_202205) # remove old data frame
 
 
-
+###
 # inspect June data frame
 str(rides_202206)
 summary(rides_202206)
@@ -215,7 +215,7 @@ rides_202206_v2 <- rides_202206_v2 %>%
 rm(rides_202206) # remove old data frame
 
 
-
+###
 # inspect July data frame
 str(rides_202207)
 summary(rides_202207)
@@ -247,7 +247,7 @@ rides_202207_v2 <- rides_202207_v2 %>%
 rm(rides_202207) # remove old data frame
 
 
-
+###
 # inspect August data frame
 str(rides_202208)
 summary(rides_202208)
@@ -278,7 +278,7 @@ rides_202208_v2 <- rides_202208_v2 %>%
 
 rm(rides_202208) # remove old data frame
 
-
+###
 # inspect September data frame
 str(rides_202209)
 summary(rides_202209)
@@ -310,7 +310,7 @@ rides_202209_v2 <- rides_202209_v2 %>%
 rm(rides_202209) # remove old data frame
 
 
-
+###
 # inspect October data frame
 str(rides_202210)
 summary(rides_202210)
@@ -342,7 +342,7 @@ rides_202210_v2 <- rides_202210_v2 %>%
 rm(rides_202210) # remove old data frame
 
 
-
+###
 # Inspect November data frame
 str(rides_202211)
 summary(rides_202211)
@@ -379,7 +379,7 @@ rides_202211_v2 <- rides_202211_v2 %>%
 rm(rides_202211)
 
 
-
+###
 # inspect December data frame
 str(rides_202212)
 summary(rides_202212)
@@ -410,7 +410,9 @@ rides_202212_v2 <- rides_202212_v2 %>%
 
 rm(rides_202212) # remove old data frame
 
-# create a data frame combining months into a single year
+
+###
+# create a data frame combining months into a single year, export as csv
 rides_all <- rbind(rides_202201_v2,
                    rides_202202_v2,
                    rides_202203_v2,
@@ -422,8 +424,5 @@ rides_all <- rbind(rides_202201_v2,
                    rides_202209_v2, 
                    rides_202210_v2, 
                    rides_202211_v2, 
-                   rides_202212_v2
-                   )
-
-# export rides_all as csv
+                   rides_202212_v2)
 write.csv(rides_all, file = "~/Documents/datasets/rides_all.csv")
