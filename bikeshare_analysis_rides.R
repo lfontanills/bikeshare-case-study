@@ -101,10 +101,14 @@ rides_all %>%
 
 
 
+
   
 # create summary data frames
-avg_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$ride_weekday + rides_all$ride_month + rides_all$rideable_type, FUN = mean)
-median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + rides_all$ride_weekday + rides_all$ride_month + rides_all$rideable_type, FUN = median)
+median_ride_length <- aggregate(rides_all$ride_length ~ rides_all$member_casual + 
+                                  rides_all$ride_weekday + 
+                                  rides_all$ride_month + 
+                                  rides_all$rideable_type, 
+                                FUN = median)
 # create summary files
 bike_types <- rides_all %>% 
   group_by(member_casual, rideable_type, ride_weekday, ride_month) %>% 
