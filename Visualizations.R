@@ -3,6 +3,30 @@
 # ggplot(data = <DATA>, mapping = aes(x = <X_VARIABLE>, y = <Y_VARIABLE>)) +
 # <GEOM_FUNCTION>()
 
+# Ride duration, all rides
+rides_all %>% 
+  ggplot(mapping = aes(ride_length, member_casual)) + 
+  geom_violin() + 
+  stat_summary(fun.y=median, geom="point", size=2, color="red") +
+  labs(
+    title = "Ride duration by user type",
+    x = "Ride duration (seconds)", 
+    y = "User type") +
+  theme_bw()
+
+# Ride duration, max to 90 minutes
+rides_all %>% 
+  filter(ride_length < (60*90)) %>% 
+  ggplot(mapping = aes(ride_length, member_casual)) + 
+  geom_violin() + 
+  stat_summary(fun.y=median, geom="point", size=2, color="red") +
+  labs(
+    title = "Ride duration by user type",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "Ride duration (seconds)", 
+    y = "User type") +
+  theme_bw()
+
 # Month-to-month
 rides_all %>% 
   filter(rideable_type != "docked_bike") %>% 
@@ -15,8 +39,7 @@ rides_all %>%
     title = "Number of rides per month",
     x = "Month", 
     y = "Number of rides",
-    fill = "User type"
-  ) +
+    fill = "User type") +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Paired")
@@ -34,8 +57,7 @@ rides_all %>%
     title = "Number of rides per day",
     x = "2022", 
     y = "Number of rides",
-    color = "User type"
-  ) +
+    color = "User type") +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_color_brewer(palette = "Paired")
@@ -52,8 +74,7 @@ rides_all %>%
     title = "Number of rides per weekday",
     x = "Day of week", 
     y = "Number of rides",
-    fill = "User type"
-  ) +
+    fill = "User type" ) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Paired")
@@ -99,8 +120,7 @@ rides_all %>%
     subtitle = "For all trips between 1 minute and 24 hours long",
     x = "Month", 
     y = "Median ride duration (seconds)",
-    fill = "User type"
-  ) +
+    fill = "User type") +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Greens")
@@ -118,8 +138,7 @@ rides_all %>%
     subtitle = "For all trips between 1 minute and 24 hours long",
     x = "Month", 
     y = "Median ride duration (seconds)",
-    fill = "User type"
-  ) +
+    fill = "User type" ) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_color_brewer(palette = "Greens")
@@ -137,8 +156,7 @@ rides_all %>%
     subtitle = "For all trips between 1 minute and 24 hours long",
     x = "Month", 
     y = "Median ride duration (seconds)",
-    fill = "User type"
-  ) +
+    fill = "User type" ) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Greens")
@@ -161,8 +179,7 @@ rides_all %>%
     subtitle = "For all trips between 1 minute and 24 hours long",
     x = "Bike type", 
     y = "Number of rides",
-    fill = "User type"
-  ) +
+    fill = "User type") +
   scale_x_discrete(labels = c("classic bike", "electric bike")) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
@@ -182,9 +199,10 @@ rides_all %>%
     subtitle = "For all trips between 1 minute and 24 hours long",
     x = "Bike type", 
     y = "Median ride duration (seconds)",
-    fill = "User type"
-  ) +
+    fill = "User type") +
   scale_x_discrete(labels = c("classic bike", "electric bike")) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
   scale_fill_brewer(palette = "Purples")
+
+
