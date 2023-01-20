@@ -2,28 +2,35 @@
 
 
 ###
-# inspect January data frame
-str(rides_202201)
-summary(rides_202201)
-
-# locate rows with rides not in Chicago area
-rides_202201 %>% 
-  filter(start_lng > -86)
-
-# locate rides with no end coordinates
-rides_202201 %>% 
-  filter(is.na(end_lat) | is.na(end_lng))
+# inspect January data frame columns
+str(rides_202201) # see started_at, ended_at are chars, not datetime
 
 # create columns with starting, ending ride datetimes
 rides_202201$start_datetime <- ymd_hms(rides_202201$started_at)
 rides_202201$end_datetime <- ymd_hms(rides_202201$ended_at)
 
+# inspect January data frame
+summary(rides_202201)
+
+# check all ride IDs are unique
+rides_202201 %>% 
+  group_by (ride_id) %>% 
+  summarize (ride_id)
+
+# locate rows with rides not in Chicago area
+rides_202201 %>% 
+  filter(start_lng > -86)
+
+# locate rides with no start or end coordinates
+rides_202201 %>% 
+  filter(is.na(start_lat) | is.na(start_lng) | is.na(end_lat) | is.na(end_lng))
+
+# locate rides with no docking stations
+rides_202201 %>% 
+  filter(start_station_id == "" | end_station_id == "")
+
 # create column ride_length (in seconds) as numeric 
 rides_202201$ride_length <- as.numeric(rides_202201$end_datetime - rides_202201$start_datetime)
-
-# locate rides with ride_length < 60 seconds or ride_length > 86400 seconds
-rides_202201 %>% 
-  filter(ride_length < 60 | ride_length > 86400)
 
 # create column for start date only, start time only, start month only 
 rides_202201$ride_date <- as.Date(rides_202201$start_datetime) # Date format
@@ -33,9 +40,20 @@ rides_202201$ride_month <- month(rides_202201$start_datetime, label = TRUE)
 # create column for weekdays
 rides_202201$ride_weekday <- wday(rides_202201$start_datetime, label = TRUE)
 
+# locate rides with ride_length < 60 seconds or ride_length > 86400 seconds
+rides_202201 %>% 
+  filter(ride_length < 60 | ride_length > 86400)
+
 # create new data frame with cleaned January data
-rides_202201_v2 <- 
-  rides_202201[!(rides_202201$ride_length < 60 | rides_202201$ride_length > 86400 | rides_202201$start_lng > -86 | is.na(rides_202201$end_lat) | is.na(rides_202201$end_lng)),]
+rides_202201_v2 <- rides_202201[
+  (!is.na(rides_202201$start_lat) | !is.na(rides_202201$start_lng) # no start geolocation
+   | !is.na(rides_202201$end_lat) | !is.na(rides_202201$end_lng) # no end geolocation
+   | rides_202201$start_station_name != "" | rides_202201$end_station_name != "" # no dock station
+   |  !(rides_202201$start_lat > -86) # not in Chicago
+   | !(rides_202201$ride_length < 60) # too short
+   | !(rides_202201$ride_length > 86400) # too long
+   | rides_202201$rideable_type != "docked_bike") # unspecified bike type
+  ,]
 
 # remove started_at, ended_at columns
 rides_202201_v2 <- 
