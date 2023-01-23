@@ -1,7 +1,4 @@
-# run after bikeshare_wrangling.R
-
-
-###
+### Start by looking at January data frame
 # inspect January data frame columns
 str(rides_202201) # see started_at, ended_at are chars, not datetime
 
