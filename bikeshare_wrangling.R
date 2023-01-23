@@ -2,9 +2,6 @@
 library(tidyverse) # data processing and analysis
 library(lubridate) # wrangle dates and times
 
-# change wd to access csv files
-setwd("/Users/laurafontanills/Documents/projects/bikeshare-case-study/divvy_csv_monthly")
-
 # import csv files as data frames
 rides_202201 <- read.csv("202201-divvy-tripdata.csv") # January 2022
 rides_202202 <- read.csv("202202-divvy-tripdata.csv") # February 2022
@@ -19,5 +16,16 @@ rides_202210 <- read.csv("202210-divvy-tripdata.csv") # October 2022
 rides_202211 <- read.csv("202211-divvy-tripdata.csv") # November 2022
 rides_202212 <- read.csv("202212-divvy-tripdata.csv") # December 2022
 
-# change wd to project folder
-setwd("/Users/laurafontanills/Documents/projects/bikeshare-case-study")
+# create a single data frame for all rides over 12-month period
+rides_all_raw <- rbind(rides_202201,
+                       rides_202202,
+                       rides_202203,
+                       rides_202204, 
+                       rides_202205, 
+                       rides_202206,
+                       rides_202207, 
+                       rides_202208, 
+                       rides_202209, 
+                       rides_202210, 
+                       rides_202211, 
+                       rides_202212)
