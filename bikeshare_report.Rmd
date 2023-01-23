@@ -26,7 +26,7 @@ output:
 ***
 <!-- Load libraries -->
 
-```{r import packages, message=FALSE, warning=FALSE}
+```{r load libraries, message=FALSE, warning=FALSE}
 library(tidyverse) # data processing and analysis
 library(lubridate) # wrangle dates and times
 library(kableExtra) # generate data tables
