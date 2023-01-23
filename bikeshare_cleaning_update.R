@@ -25,11 +25,6 @@ rides_all_raw %>%
 rides_all_raw$started_at <- ymd_hms(rides_all_raw$started_at)
 rides_all_raw$ended_at <- ymd_hms(rides_all_raw$ended_at)
 
-# create new columns for ride_month (e.g. January), ride_weekday (e.g. Monday), ride_hour (as integer 0-24)
-rides_all_raw$ride_month <- month(rides_all_raw$started_at, label = TRUE)
-rides_all_raw$ride_weekday <- wday(rides_all_raw$started_at, label = TRUE)
-rides_all_raw$ride_hour <- hour(rides_all_raw$started_at)
-
 # ride_length: create new column for ride duration, add 1 hour to rides that started before 2AM and ended after 3AM on March 13th (DST begins)
 rides_all_raw$ride_length_raw <- as.numeric(rides_all_raw$ended_at - rides_all_raw$started_at)
 rides_all_raw <- mutate(rides_all_raw, ride_length = ifelse(started_at <= '2022-03-13 02:00:00' & ended_at >= '2022-03-13 03:00:00', ride_length_raw - 360, ride_length_raw))
