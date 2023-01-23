@@ -18,16 +18,24 @@ output:
 
 <br><br>
 
-> Let's start with a short introduction. Explain briefly what this document is going to talk about. May be add a [useful link](https://github.com/holtzy/epuRate) relative to this project.
+<!-- > Let's start with a short introduction. Explain briefly what this document is going to talk about. May be add a [useful link](https://github.com/holtzy/epuRate) relative to this project. -->
 
+> In this document I will import, clean, and analyze 12 months of bike-share user data. My task is to analyze ride data to determine how annual members and casual riders use the bike-share differently. This analysis will guide my recommendations for marketing strategy to convert casual riders into annual members. I completed this case study as part of my Google Data Analytics Certification. 
+
+> The case study is about a fictional bike-share company called Cyclistic, while the data is taken from Chicago's Divvy bike-share, so in this report I will describe some considerations and assumptions I made to reconcile the case and the data set.
 
 # Get the data
 ***
-Always start by loading *libraries*. The [tidyverse](https://www.tidyverse.org) is probably the package I use the most. Quite difficult to imagine analysing data without it. It is a good practice to load all the packages in the same time. It allows to know exactly what is needed to reproduce your analysis.
-```{r, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(rmarkdown)    # You need this library to run this template.
-library(epuRate)      # Install with devtools: install_github("holtzy/epuRate", force=TRUE)
+<!-- >Always start by loading *libraries*. The [tidyverse](https://www.tidyverse.org) is probably the package I use the most. Quite difficult to imagine analysing data without it. It is a good practice to load all the packages in the same time. It allows to know exactly what is needed to reproduce your analysis. -->
+
+
+```{r import packages, message=FALSE, warning=FALSE}
+library(tidyverse) # data processing and analysis
+library(lubridate) # wrangle dates and times
+library(kableExtra) # generate data tables
+library(rmarkdown) # You need this library to run this template.
+library(epuRate)  # Install with devtools: install_github("holtzy/epuRate", force=TRUE)
+
 ```
 
 Then I explain what is my input data and I load it. Here is how it looks like:
