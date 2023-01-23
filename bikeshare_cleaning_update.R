@@ -18,7 +18,7 @@ rides_all_raw %>%
 rides_all_raw %>% 
   group_by(member_casual) %>% 
   summarize(count = n()) %>% 
-  mutate(percent = 100*(count/sum(count)))
+  mutate(percent = 100*(count/sum))
 
 
 # started_at and ended_at: Change type from chr to positx
@@ -95,6 +95,9 @@ rides_all_clean <-rides_all_raw %>%
   filter(!(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00')) %>% 
   filter(between(start_lat, city_lat[1], city_lat[2])) %>% 
   filter(between(end_lat, city_lat[1], city_lat[2]))
+
+# export data frame as csv
+write.csv(rides_all_clean, '/Users/laurafontanills/Documents/projects/bikeshare-case-study/rides_2022.csv', row.names = FALSE)
 
 # see how many rides we have left to analyze  
 nrow(rides_all_raw) - nrow(rides_all_clean)
