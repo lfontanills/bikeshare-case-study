@@ -66,8 +66,8 @@ I decided to filter out these rides to better map my data to the Cyclistic case.
 
 ```{r}
 # Show it:
-rides_2022 <- read.csv("rides_2022.csv")
-head(rides_2022)
+rides_all <- read.csv("rides_2022.csv")
+head(rides_all)
 ```
 
 > 
