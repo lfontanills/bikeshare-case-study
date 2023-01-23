@@ -98,20 +98,20 @@ rides_all_clean <-rides_all_raw %>%
   filter(between(end_lat, city_lat[1], city_lat[2]))
 
 # export data frame as csv
-write.csv(rides_all_clean, '/Users/laurafontanills/Documents/projects/bikeshare-case-study/rides_2022.csv', row.names = FALSE)
+write.csv(rides_all, '/Users/laurafontanills/Documents/projects/bikeshare-case-study/rides_all.csv', row.names = FALSE)
 
 # see how many rides we have left to analyze  
-nrow(rides_all_raw) - nrow(rides_all_clean)
-(nrow(rides_all_raw) - nrow(rides_all_clean))/nrow(rides_all_clean) * 100
+nrow(rides_all_raw) - nrow(rides_all)
+(nrow(rides_all_raw) - nrow(rides_all))/nrow(rides_all) * 100
 
 # inspect clean data frame
-summary(rides_all_clean)
+summary(rides_all)
 
 # check rideable types ok
-rides_all_clean %>% 
+rides_all %>% 
   group_by(rideable_type) %>% 
   summarize(count =n()) %>% 
   mutate(percent = 100*(count/sum(count)))
 
-rides_all_clean %>% 
+rides_all %>% 
   filter(end_station_name =="")

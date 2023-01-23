@@ -65,11 +65,9 @@ comparison_table %>%
 I decided to filter out these rides to better map my data to the Cyclistic case. 
 
 ```{r read df}
-rides_all <- read.csv("rides_2022.csv")
+rides_all <- read.csv("rides_all_clean.csv")
 head(rides_all)
 ```
-
-> 
 
 This file has `r nrow(rides_all)` lines and `r ncol(rides_all)` columns. It is ready to be analyzed.
 
@@ -77,18 +75,18 @@ This file has `r nrow(rides_all)` lines and `r ncol(rides_all)` columns. It is r
 ***
 <!-- Here are 3 version of a [circular barplot](https://www.r-graph-gallery.com/circular-barplot/) that you can find in the [R graph gallery](https://www.r-graph-gallery.com/circular-barplot/). Note that the figure is centered. You can change the size of the plot with **fig.width** and **fig.height**   -->
 
-## Recommendation 1: Casual riders use the same few stations
+## Observation 1: Casual riders ride more often during summer
 Let's start with a basic version of a circular representation of the data
 ```{r, warning=FALSE, fig.align='center' }
 
 ```
 
-## Recommendation 2: Casual riders ride more often on weekends and during summer
+## Observation 2: Casual riders use the same few stations
 ```{r, warning=FALSE, fig.align='center' }
 
 ```
 
-## Recommendation 3: Casual riders use bikes more often on off-peak times
+## Observation 3: Casual riders use bikes more often on off-peak times, and for longer
 ```{r, warning=FALSE, fig.align='center' }
 
 ```
