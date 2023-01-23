@@ -91,7 +91,8 @@ rides_all_raw %>%
 rides_all_clean <-rides_all_raw %>% 
   filter(rideable_type == "classic_bike" | rideable_type == "electric_bike") %>% 
   filter(between(ride_length, 60, (60*60*24))) %>% 
-  filter(start_station_name != "" | end_station_name != "") %>% 
+  filter(start_station_name != "") %>% 
+  filter(end_station_name != "") %>% 
   filter(!(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00')) %>% 
   filter(between(start_lat, city_lat[1], city_lat[2])) %>% 
   filter(between(end_lat, city_lat[1], city_lat[2]))
@@ -111,3 +112,6 @@ rides_all_clean %>%
   group_by(rideable_type) %>% 
   summarize(count =n()) %>% 
   mutate(percent = 100*(count/sum(count)))
+
+rides_all_clean %>% 
+  filter(end_station_name =="")
