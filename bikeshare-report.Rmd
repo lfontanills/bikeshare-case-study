@@ -20,14 +20,11 @@ output:
 
 <!-- > Let's start with a short introduction. Explain briefly what this document is going to talk about. May be add a [useful link](https://github.com/holtzy/epuRate) relative to this project. -->
 
-> In this document I will import, clean, and analyze 12 months of bike-share user data. My task is to analyze ride data to determine how annual members and casual riders use the bike-share differently. This analysis will guide my recommendations for marketing strategy to convert casual riders into annual members. I completed this case study as part of my Google Data Analytics Certification. 
-
-> The case study is about a fictional bike-share company called Cyclistic, while the data is taken from Chicago's Divvy bike-share, so in this report I will describe some considerations and assumptions I made to reconcile the case and the data set.
+> In this document I will import, clean, and analyze 12 months of bike-share user data. My task is to analyze ride data to determine how annual members and casual riders use the bike-share differently. This analysis will guide my recommendations for marketing strategy to convert casual riders into annual members. I completed this case study as part of my Google Data Analytics Certification. Check out the [full project repository](https://github.com/lfontanills/bikeshare-case-study) to see how I processed the 12 data sets and created a data frame ready for analysis.
 
 # Get the data
 ***
-<!-- >Always start by loading *libraries*. The [tidyverse](https://www.tidyverse.org) is probably the package I use the most. Quite difficult to imagine analysing data without it. It is a good practice to load all the packages in the same time. It allows to know exactly what is needed to reproduce your analysis. -->
-
+<!-- Load libraries -->
 
 ```{r import packages, message=FALSE, warning=FALSE}
 library(tidyverse) # data processing and analysis
@@ -38,11 +35,32 @@ library(epuRate)  # Install with devtools: install_github("holtzy/epuRate", forc
 
 ```
 
-Then I explain what is my input data and I load it. Here is how it looks like:
+> The case study is about a fictional bike-share company called Cyclistic, while the data is taken from Chicago's Divvy bike-share, so in this report I will describe some considerations and assumptions I made to reconcile the case and the data set.
+
+<!-- Comparison table: Cyclistic vs. Divvy and things to consider -->
+```{r comparison_table}
+
+comparison_table <- tibble(
+  Item = c("Member types", "Bike types", "Docking", "Pricing"),
+  Cyclistic = c("Member, Casual", "Classic, E-bike, Accessible bikes", "Must be docked", "Unspecified"),
+  Divvy = c("Member, Casual", "Classic, E-Bike, Docked bike", "Docked, undocked with fees", "Flat rates with fees")
+)
+
+comparison_table %>% 
+  kbl() %>% 
+  kable_material(c("striped"))
+```
+
+> * Bike types: Since Cyclistic's accessible bikes account for 8% of riders, and Divvy does not have accessible bikes, I consider only classic and e-bikes in my analysis.
+* Docking: Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.000001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. As Cyclistic bikes must all be docked, I am considering only bikes that start and end at docks in my analysis.
+
+<!-- Then I explain what is my input data and I load it. Here is how it looks like: --> 
 ```{r}
 # Show it:
-mtcars %>% head(5)
+#mtcars %>% head(5)
 ```
+
+> 
 
 This file has `r nrow(mtcars)` lines and `r ncol(mtcars)` columns. It is ready to be analysed.
 
