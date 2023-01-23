@@ -55,22 +55,28 @@ comparison_table %>%
 * Docking: Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.000001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. As Cyclistic bikes must all be docked, I am considering only bikes that start and end at docks in my analysis.
 
 <!-- Then I explain what is my input data and I load it. Here is how it looks like: --> 
+
+> My data for this project is located in 12 csvs, one for each of the last 12 months. I reviewed each month independently in Excel, which helped me uncover some issues to fix. These issues were:
+* A test ride outside the Chicago area, and another few test rides with no geolocation
+* Several rides starting before and ending after the DST time changes in March and November
+* Many rides shorter than 1 minute, and longer than 24 hours
+* Rides with no end location
+* A nonspecific "docked" bike type assoiated with some rides by casual members
+I decided to filter out these rides to better map my data to the Cyclistic case. 
+
 ```{r}
 # Show it:
-#mtcars %>% head(5)
+rides_2022 <- read.csv("rides_2022.csv")
+head(rides_2022)
 ```
 
 > 
 
-This file has `r nrow(mtcars)` lines and `r ncol(mtcars)` columns. It is ready to be analysed.
+This file has `r nrow(rides_2022)` lines and `r ncol(rides_2022)` columns. It is ready to be analysed.
 
-
-
-
-
-# A few analysis
+# Analysis
 ***
-Here are 3 version of a [circular barplot](https://www.r-graph-gallery.com/circular-barplot/) that you can find in the [R graph gallery](https://www.r-graph-gallery.com/circular-barplot/). Note that the figure is centered. You can change the size of the plot with **fig.width** and **fig.height**  
+<!-- Here are 3 version of a [circular barplot](https://www.r-graph-gallery.com/circular-barplot/) that you can find in the [R graph gallery](https://www.r-graph-gallery.com/circular-barplot/). Note that the figure is centered. You can change the size of the plot with **fig.width** and **fig.height**   -->
 
 ## basic
 Let's start with a basic version of a circular representation of the data
