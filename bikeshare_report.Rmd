@@ -88,7 +88,7 @@ Let's start with a basic version of a circular representation of the data
 
 ```
 
-## Recommendation 3: Casual riders use casual bikes more often
+## Recommendation 3: Casual riders use bikes more often on off-peak times
 ```{r, warning=FALSE, fig.align='center' }
 
 ```
