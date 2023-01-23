@@ -3,7 +3,7 @@ library(tidyverse) # data processing and analysis
 library(lubridate) # wrangle dates and times
 
 # change wd to access csv files
-setwd("/Users/laurafontanills/Documents/datasets/divvy_csv_monthly")
+setwd("/Users/laurafontanills/Documents/projects/bikeshare-case-study/divvy_csv_monthly")
 
 # import csv files as data frames
 rides_202201 <- read.csv("202201-divvy-tripdata.csv") # January 2022
