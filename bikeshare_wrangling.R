@@ -1,8 +1,6 @@
 # load packages
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(lubridate) # wrangle dates, time
+library(tidyverse) # data processing and analysis
+library(lubridate) # wrangle dates and times
 
 # change wd to access csv files
 setwd("/Users/laurafontanills/Documents/datasets/divvy_csv_monthly")
