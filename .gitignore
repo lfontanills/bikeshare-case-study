@@ -4,4 +4,15 @@
 .Ruserdata
 .DS_Store
 bikeshare_report.html
-divvy_csv_monthly/
+202201-divvy-tripdata.csv
+202202-divvy-tripdata.csv
+202203-divvy-tripdata.csv
+202204-divvy-tripdata.csv
+202205-divvy-tripdata.csv
+202206-divvy-tripdata.csv
+202207-divvy-tripdata.csv
+202208-divvy-tripdata.csv
+202209-divvy-publictripdata.csv
+202210-divvy-tripdata.csv
+202211-divvy-tripdata.csv
+202212-divvy-tripdata.csv
