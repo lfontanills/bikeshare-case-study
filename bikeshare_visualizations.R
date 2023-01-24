@@ -3,32 +3,77 @@
 # ggplot(data = <DATA>, mapping = aes(x = <X_VARIABLE>, y = <Y_VARIABLE>)) +
 # <GEOM_FUNCTION>()
 
-# Ride duration, all rides
-rides_all %>% 
+
+# Average duration
+length_plot <-
+  rides_all_clean %>% 
+  group_by(member_casual) %>% 
+  summarize(number_of_rides = n(), mean_length = mean(ride_length)) %>% 
+  arrange(member_casual) %>% 
+  ggplot(aes(x=member_casual, y=mean_length, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Average ride duration",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "User type", 
+    y = "Average ride duration (seconds)",
+    fill = "User type") +
+  scale_x_discrete(labels = c("classic bike", "electric bike")) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens", direction = -1)
+
+# Number of rides by time of week
+weekday_plot <-
+rides_all_clean %>% 
+  mutate(weekday = wday(started_at, label = TRUE, abbr = FALSE)) %>% 
+  group_by(member_casual, weekday) %>% 
+  summarize(count=n()) %>% 
+  ggplot(aes(x=weekday, y=count, fill=member_casual))+
+  geom_col(position="dodge") +
+  labs(
+    title = "Number of rides by weekday",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "User type", 
+    y = "Number of rides",
+    fill = "User type") +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens", direction = -1)
+
+
+
+
+# APPENDIX: Ride duration, all rides
+rides_all_clean %>% 
   ggplot(mapping = aes(ride_length, member_casual)) + 
   geom_violin() + 
-  stat_summary(fun.y=median, geom="point", size=2, color="red") +
+  xlim(60, 5400) +
+  stat_summary(fun=mean, color = "blue", linewidth = 2, size = 0.1) +
   labs(
     title = "Ride duration by user type",
+    subtitle = "All trips between 60s and 24h long, x-axis truncated",
     x = "Ride duration (seconds)", 
     y = "User type") +
   theme_bw()
 
-# Ride duration, max to 90 minutes
-rides_all %>% 
-  filter(ride_length < (60*90)) %>% 
-  ggplot(mapping = aes(ride_length, member_casual)) + 
-  geom_violin() + 
-  stat_summary(fun.y=median, geom="point", size=2, color="red") +
+# Number of rides, hour of day
+rides_all_clean %>% 
+  mutate(hour = hour(started_at)) %>% 
+  group_by(member_casual, hour) %>% 
+  summarize(count=n()) %>% 
+  ggplot(aes(x=hour, y=count, fill=member_casual))+
+  geom_col(position="dodge") +
   labs(
-    title = "Ride duration by user type",
+    title = "Number of rides by weekday",
     subtitle = "For all trips between 1 minute and 24 hours long",
-    x = "Ride duration (seconds)", 
-    y = "User type") +
-  theme_bw()
+    x = "User type", 
+    y = "Number of rides",
+    fill = "User type") +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens", direction = -1)
 
 # Month-to-month
-rides_all %>% 
+rides_all_clean %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_month) %>% 
   summarize(number_of_rides = n()) %>% 
@@ -45,8 +90,8 @@ rides_all %>%
   scale_fill_brewer(palette = "Paired")
 
 # Whole year
-rides_all$ride_date <- as.Date(rides_all$start_datetime)
-rides_all %>% 
+rides_all_clean$ride_date <- as.Date(rides_all_clean$start_datetime)
+rides_all_clean %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_date) %>% 
   summarize(number_of_rides = n()) %>% 
@@ -63,7 +108,7 @@ rides_all %>%
   scale_color_brewer(palette = "Paired")
 
 # By day of week
-rides_all %>% 
+rides_all_clean %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n()) %>% 
@@ -108,7 +153,7 @@ rides_202210_v2 %>%
 
 # Visualizations for ride duration
 # Month-to-month
-rides_all %>% 
+rides_all_clean %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_month) %>% 
   summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
@@ -126,7 +171,7 @@ rides_all %>%
   scale_fill_brewer(palette = "Greens")
 
 # Whole year
-rides_all %>% 
+rides_all_clean %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_date) %>% 
   summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
@@ -144,7 +189,7 @@ rides_all %>%
   scale_color_brewer(palette = "Greens")
 
 # By day of week
-rides_all %>% 
+rides_all_clean %>% 
   filter(rideable_type != "docked_bike") %>% 
   group_by(member_casual, ride_weekday) %>% 
   summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
@@ -165,7 +210,7 @@ rides_all %>%
 
 # Number of rides
 # Visualizations for bike types by month
-rides_all %>% 
+rides_all_clean %>% 
   group_by(member_casual, rideable_type) %>% 
   filter(rideable_type != "docked_bike") %>% 
   summarize(number_of_rides = n(), ride_month) %>% 
@@ -185,24 +230,22 @@ rides_all %>%
   theme_bw() + 
   scale_fill_brewer(palette = "Purples")
 
-# Median duration
-rides_all %>% 
-  filter(rideable_type != "docked_bike") %>% 
-  group_by(member_casual, rideable_type) %>% 
-  summarize(number_of_rides = n(), median_duration = median(ride_length)) %>% 
-  arrange(member_casual, rideable_type) %>% 
-  ggplot(aes(x=rideable_type, y=median_duration, fill=member_casual)) +
+# Average duration
+rides_all_clean %>% 
+  group_by(member_casual) %>% 
+  summarize(number_of_rides = n(), mean_length = mean(ride_length)) %>% 
+  arrange(member_casual) %>% 
+  ggplot(aes(x=member_casual, y=mean_length, fill=member_casual)) +
   geom_col(position = "dodge") +
-  coord_flip() +
   labs(
-    title = "Median ride duration by bike type",
+    title = "Average ride duration",
     subtitle = "For all trips between 1 minute and 24 hours long",
-    x = "Bike type", 
-    y = "Median ride duration (seconds)",
+    x = "User type", 
+    y = "Average ride duration (seconds)",
     fill = "User type") +
   scale_x_discrete(labels = c("classic bike", "electric bike")) +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
-  scale_fill_brewer(palette = "Purples")
+  scale_fill_brewer(palette = "Greens", direction = -1)
 
 
