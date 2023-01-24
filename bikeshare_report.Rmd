@@ -65,47 +65,108 @@ comparison_table %>%
 I decided to filter out these rides to better map my data to the Cyclistic case. 
 
 ```{r read df}
-rides_all <- read.csv("rides_all_clean.csv")
-head(rides_all)
+rides_all_clean <- read.csv("rides_all_clean.csv")
+head(rides_all_clean)
 ```
 
-This file has `r nrow(rides_all)` lines and `r ncol(rides_all)` columns. It is ready to be analyzed.
+This file has `r nrow(rides_all_clean)` lines and `r ncol(rides_all_clean)` columns. It is ready to be analyzed.
 
 # Analysis
 ***
 <!-- Here are 3 version of a [circular barplot](https://www.r-graph-gallery.com/circular-barplot/) that you can find in the [R graph gallery](https://www.r-graph-gallery.com/circular-barplot/). Note that the figure is centered. You can change the size of the plot with **fig.width** and **fig.height**   -->
 
-## Observation 1: Casual riders ride more often during summer
-Let's start with a basic version of a circular representation of the data
-```{r, warning=FALSE, fig.align='center' }
+> I focused on ride duration, ride frequency over different time periods, and classic vs. e-bike use. To see my analysis of these 3 areas, check out my github. 
 
+> Casual riders and members differ in when they ride bikes, and how long they ride for. Casual riders also favor a few stations in the city center.
+
+## Finding 1: Casual riders take more weekend trips
+Member rides peak during the work week, which could indicate that many members use bikes for commuting. Casual rides peak on Saturday and Sunday, suggesting that casual riders use bikes for leisure or tourism.
+```{r fig.align='center', warning=FALSE}
+weekday_plot <-
+  rides_all_clean %>% 
+  mutate(weekday = wday(started_at, label = TRUE, abbr = FALSE)) %>% 
+  group_by(member_casual, weekday) %>% 
+  summarize(count=n()) %>% 
+  ggplot(aes(x=weekday, y=count, fill=member_casual))+
+  geom_col(position="dodge") +
+  labs(
+    title = "Number of rides by weekday",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "User type", 
+    y = "Number of rides",
+    fill = "User type") +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens", direction = -1)
+
+weekday_plot
 ```
 
-## Observation 2: Casual riders use the same few stations
-```{r, warning=FALSE, fig.align='center' }
+## Finding 2: Casual riders take longer trips than members
 
+Member rides, on average, take about 12 minutes, while casual rides last more than 20 minutes. Taken with finding 1, this indicates that many casual users are riding for fun.
+```{r, warning=FALSE, fig.align='center' }
+length_plot <-
+rides_all_clean %>% 
+  group_by(member_casual) %>% 
+  summarize(number_of_rides = n(), mean_length = mean(ride_length)) %>% 
+  arrange(member_casual) %>% 
+  ggplot(aes(x=member_casual, y=mean_length, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Average ride duration",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "User type", 
+    y = "Average ride duration (seconds)",
+    fill = "User type") +
+  scale_x_discrete(labels = c("classic bike", "electric bike")) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens", direction = -1)
+
+length_plot
 ```
 
-## Observation 3: Casual riders use bikes more often on off-peak times, and for longer
-```{r, warning=FALSE, fig.align='center' }
+## Finding 3: Casual riders use a few stations relatively frequently
 
+Casual riders show a clear preference for 5 stations in particular -- these stations make up about 8% of all casual rides (by starting point). Members don't especially favor a few stations, and no station accounts for more than 1% of all member rides (by starting point).
+```{r, warning=FALSE, fig.align='center' }
+rides_all_clean %>% 
+  filter(member_casual == "casual") %>% 
+  group_by(member_casual, start_station_name) %>% 
+  summarize(count = n()) %>% 
+  arrange(desc(count)) %>% 
+  mutate(percent_of_rides = 100*(count/sum(count))) %>% 
+  head(10)
+
+rides_all_clean %>% 
+  filter(member_casual == "member") %>% 
+  group_by(member_casual, start_station_name) %>% 
+  summarize(count = n()) %>% 
+  arrange(desc(count)) %>% 
+  mutate(percent_of_rides = 100*(count/sum(count))) %>% 
+  head(10)
 ```
+The top 5 casual starting stations are located in parks in the city center, close to the waterfront. These are very popular locations for tourists and locals.
 
 # Conclusion
 ***
+>  Here are my recommendations for converting casual riders to members:
+* Market to non-commuter casual riders who use bikes for leisure
+* Consider new membership options and pricing (e.g. weekend passes, adjusted pricing for longer trips)
+* Increase advertising at high-traffic stations in the city center
+
+<!-- add tableau viz to another section of site -->
+<!-- consider a slides presentation later on -->
 
 
-## Even more stuff
+## Sources
 ***
+[Data source](https://divvy-tripdata.s3.amazonaws.com/index.html)
 
-```{r}
+[Data license](https://ride.divvybikes.com/data-license-agreement)
 
-```
-
-
-## References
-***
-
+[City of Chicago Divvy database](https://data.cityofchicago.org/Transportation/Divvy-Bicycle-Stations-All-Map/bk89-9dk7)
 
 <!-- Read more about this template [here](https://github.com/holtzy/epuRate). -->
 
