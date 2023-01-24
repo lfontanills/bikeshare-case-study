@@ -32,7 +32,7 @@ library(lubridate) # wrangle dates and times
 library(kableExtra) # generate data tables
 library(rmarkdown) # You need this library to run this template.
 library(epuRate)  # Install with devtools: install_github("holtzy/epuRate", force=TRUE)
-
+options(dplyr.summarise.inform = FALSE)
 ```
 
 > The case study is about a fictional bike-share company called Cyclistic, while the data is taken from Chicago's Divvy bike-share, so in this report I will describe some considerations and assumptions I made to reconcile the case and the data set.
@@ -160,7 +160,7 @@ The top 5 casual starting stations are located in parks in the city center, clos
 <!-- consider a slides presentation later on -->
 
 
-## Sources
+## Resources
 ***
 [Data source](https://divvy-tripdata.s3.amazonaws.com/index.html)
 
