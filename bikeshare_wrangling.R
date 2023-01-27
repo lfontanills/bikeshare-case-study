@@ -1,4 +1,7 @@
+## Data Wrangling
+
 # load packages
+
 library(tidyverse) # data processing and analysis
 library(lubridate) # wrangle dates and times
 
@@ -16,8 +19,8 @@ rides_202210 <- read.csv("202210-divvy-tripdata.csv") # October 2022
 rides_202211 <- read.csv("202211-divvy-tripdata.csv") # November 2022
 rides_202212 <- read.csv("202212-divvy-tripdata.csv") # December 2022
 
-# create a single data frame for all rides over 12-month period
-rides_all_raw <- rbind(rides_202201,
+# create a combined data frame for all rides over 12-month period
+rides_2022 <- rbind(rides_202201,
                        rides_202202,
                        rides_202203,
                        rides_202204, 
@@ -29,3 +32,6 @@ rides_all_raw <- rbind(rides_202201,
                        rides_202210, 
                        rides_202211, 
                        rides_202212)
+
+# write combined data frame as csv
+write.csv(rides_2022, "~/Documents/projects/bikeshare-case-study/rides_2022.csv") 
