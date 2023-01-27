@@ -15,17 +15,6 @@ output:
     code_folding: "hide"
 ---
 
-
-<br><br>
-
-<!-- > Let's start with a short introduction. Explain briefly what this document is going to talk about. May be add a [useful link](https://github.com/holtzy/epuRate) relative to this project. -->
-
-> In this document I will import, clean, and analyze 12 months of bike-share user data. My task is to analyze ride data to determine how annual members and casual riders use the bike-share differently. This analysis will guide my recommendations for marketing strategy to convert casual riders into annual members. I completed this case study as part of my Google Data Analytics Certification. Check out the [full project repository](https://github.com/lfontanills/bikeshare-case-study) to see how I processed the 12 data sets and created a data frame ready for analysis.
-
-# Get the data
-***
-<!-- Load libraries -->
-
 ```{r load libraries, message=FALSE, warning=FALSE}
 library(tidyverse) # data processing and analysis
 library(lubridate) # wrangle dates and times
@@ -35,9 +24,20 @@ library(epuRate)  # Install with devtools: install_github("holtzy/epuRate", forc
 options(dplyr.summarise.inform = FALSE)
 ```
 
-> The case study is about a fictional bike-share company called Cyclistic, while the data is taken from Chicago's Divvy bike-share, so in this report I will describe some considerations and assumptions I made to reconcile the case and the data set.
 
-<!-- Comparison table: Cyclistic vs. Divvy and things to consider -->
+# About
+***
+
+I completed this case study as the capstone project for the Google Data Analytics Certification course. I used base R and tidyverse to complete my analysis and create visualizations.
+
+
+## Project Objective
+***
+
+The case study is about a fictional bike-share company called Cyclistic, and my task was to evaluate how members and non-members ("casual") use the bike-share differently. I analyzed the number of rides taken in different time periods, the duration of rides, and the types of bikes used. 
+
+The data is taken from a real bike-share -- Chicago-based Divvy -- so in this report I will describe some considerations and assumptions I made to reconcile the case study and the real data set.
+
 ```{r comparison_table}
 
 comparison_table <- tibble(
@@ -51,33 +51,38 @@ comparison_table %>%
   kable_material(c("striped"))
 ```
 
-> * Bike types: Since Cyclistic's accessible bikes account for 8% of riders, and Divvy does not have accessible bikes, I consider only classic and e-bikes in my analysis.
-* Docking: Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.000001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. As Cyclistic bikes must all be docked, I am considering only bikes that start and end at docks in my analysis.
+* **Bike types**: Since Cyclistic's accessible bikes account for 8% of riders, and Divvy does not have accessible bikes, I consider only classic and e-bikes in my analysis. The presence of a nonspecific "docked" bike type in the Divvy dataset limited my analysis.
+* **Docking**: Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.000001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. As Cyclistic bikes must all be docked, I am considering only bikes that start and end at docks in my analysis.
+* **Other**: Divvy's ride timestamps don't adjust for Daylight Savings Time (which began March 13th 2022, and ended November 6th 2022).
 
-<!-- Then I explain what is my input data and I load it. Here is how it looks like: --> 
+# Get the data
+***
 
-> My data for this project is located in 12 csvs, one for each of the last 12 months. I reviewed each month independently in Excel, which helped me uncover some issues to fix. These issues were:
-* A test ride outside the Chicago area, and another few test rides with no geolocation
-* Several rides starting before and ending after the DST time changes in March and November
-* Many rides shorter than 1 minute, and longer than 24 hours
+[Click here](https://divvy-tripdata.s3.amazonaws.com/index.html) to view historical Divvy data. Each month's data is contained in a single .csv file. I looked at data for the previous 12 months (January 2022 to December 2022).
+
+Before working in R, I reviewed each month's data independently in Excel, to get a better sense of the data. I discovered the following inconsistencies that I would need to address.
+* Test rides outside the Chicago area or with no geolocation
+* Rides starting before and ending after the DST time changes in March and November
+* Many rides shorter than 1 minute, which could be due to bike problems
+* Many rides longer than 24 hours, which could be due to docking problems
 * Rides with no end location
-* A nonspecific "docked" bike type assoiated with some rides by casual members
-I decided to filter out these rides to better map my data to the Cyclistic case. 
+* A nonspecific "docked" bike type associated with a small percentage of rides by casual users
 
-```{r read df}
-rides_all_clean <- read.csv("rides_all_clean.csv")
-head(rides_all_clean)
+I combined the 12 months of Divvy data into a single data frame.
+```{r read combined df}
+rides_2022 <- read.csv("rides_2022.csv")
+head(rides_2022)
 ```
 
-This file has `r nrow(rides_all_clean)` lines and `r ncol(rides_all_clean)` columns. It is ready to be analyzed.
+This file has `r nrow(df)` lines and `r ncol(df)` columns. 
 
-# Analysis
+## Data cleaning
 ***
-<!-- Here are 3 version of a [circular barplot](https://www.r-graph-gallery.com/circular-barplot/) that you can find in the [R graph gallery](https://www.r-graph-gallery.com/circular-barplot/). Note that the figure is centered. You can change the size of the plot with **fig.width** and **fig.height**   -->
 
-> I focused on ride duration, ride frequency over different time periods, and classic vs. e-bike use. To see my analysis of these 3 areas, check out my github. 
+This file has `r nrow(df)` lines and `r ncol(df)` columns. It is ready to be analyzed.
 
-> Casual riders and members differ in when they ride bikes, and how long they ride for. Casual riders also favor a few stations in the city center.
+
+## Analysis and Visualizations
 
 ## Finding 1: Casual riders take more weekend trips
 Member rides peak during the work week, which could indicate that many members use bikes for commuting. Casual rides peak on Saturday and Sunday, suggesting that casual riders use bikes for leisure or tourism.
@@ -151,14 +156,12 @@ The top 5 casual starting stations are located in parks in the city center, clos
 
 # Conclusion
 ***
->  Here are my recommendations for converting casual riders to members:
+Casual riders and members differ in when they ride bikes, and how long they ride for. Casual riders also favor a few stations in the city center.
+
+Here are my recommendations for converting casual riders to members:
 * Market to non-commuter casual riders who use bikes for leisure
 * Consider new membership options and pricing (e.g. weekend passes, adjusted pricing for longer trips)
 * Increase advertising at high-traffic stations in the city center
-
-<!-- add tableau viz to another section of site -->
-<!-- consider a slides presentation later on -->
-
 
 ## Resources
 ***
