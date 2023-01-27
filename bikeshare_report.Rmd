@@ -55,12 +55,12 @@ head(rides_2022)
 This file has `r nrow(rides_2022)` lines and `r ncol(rides_2022)` columns. 
 
 I confirm that all rows are unique by checking the number of ride IDs. TRUE indicates that all rows are unique.
-```{r}
+```{r check all rides unique}
 n_distinct(rides_2022$ride_id) == nrow(rides_2022)
 ```
 
 I also confirm that all rides were taken by either members or casual users.
-```{r}
+```{r check all user types}
 rides_2022 %>% 
   group_by(member_casual) %>% 
   summarize(num_rides = n()) %>% 
@@ -90,7 +90,7 @@ rides_2022 %>%
 
 I'll also need to filter out rides that started during daylight savings time (before November 6th at 2 AM) and ended after daylight savings time (after November 6th at 2 AM). This is because on November 6th the hour from 2-3 AM happens twice. This means that some of the ride durations will be incorrect, as they should be an hour longer.
 
-```{r}
+```{r find rides on nov 6 - dst}
 rides_2022 %>% 
   filter(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00') %>% 
   select(started_at, ended_at, ride_length) %>% 
@@ -108,7 +108,7 @@ rides_2022 %>%
 
 There are three bike types in rides_2022 - classic_bike, electric_bike, and docked_bike. Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.00001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. Divvy allows their users to take out and drop off undocked bikes for a fee.
 
-```{r}
+```{r num rides vs bike type}
 # How many rides were taken by members, casual users on each type
 rides_2022 %>% 
   group_by(member_casual, rideable_type) %>% 
@@ -224,7 +224,7 @@ length_plot
 
 Member rides peak during the work week, which could indicate that many members use bikes for commuting. Casual rides peak on Saturday and Sunday, suggesting that casual users use bikes for leisure or tourism.
 
-```{r fig.align='center', warning=FALSE}
+```{r plot rides by weekday, fig.align='center', warning=FALSE}
 weekday_plot <-
   rides_clean %>% 
   mutate(weekday = wday(started_at, label = TRUE, abbr = FALSE)) %>% 
@@ -253,7 +253,7 @@ Members don't especially favor any stations, and no station accounts for more th
 
 If you'd like to see a fancy map animation I made with Divvy rider data, check out the Visualizations section of my website.
 
-```{r, warning=FALSE, fig.align='center' }
+```{r plot rides by member type, warning=FALSE, fig.align='center' }
 
   rides_clean %>% 
   filter(member_casual == "casual") %>% 
@@ -283,7 +283,7 @@ rides_clean %>%
 ```
 
 
-```{r}
+```{r bike types plot,warning=FALSE, fig.align='center' }
 bike_type_plot <- rides_clean %>% 
   group_by(rideable_type, member_casual) %>% 
   filter(rideable_type == "classic_bike" | rideable_type == "electric_bike") %>% 
@@ -317,7 +317,7 @@ Here are my recommendations for converting casual riders to members:
 
 Here's a sample of the statistical tests I used to determine whether casual users differed significantly from members. 
 
-```{r ride duration stats}
+```{r ride duration stats, warning=FALSE, fig.align='center' }
 
 # Ride durations between members and casual users
 ggplot(rides_clean, aes(x = ride_length)) +
