@@ -254,13 +254,13 @@ tapply(rides_clean$ride_length, rides_clean$member_casual, summary)
 
 # check if normal distribution
 
-hist(subset(rides_clean, member_casual == "member")$ride_length,
-     main = "Ride lengths for members",
-     xlab = "Ride length (seconds)")
-
-hist(subset(rides_clean, member_casual == "casual")$ride_length,
-     main = "Ride lengths for casual users",
-     xlab = "Ride length (seconds)")
+ggplot(rides_clean, aes(x = ride_length)) +
+  geom_histogram() +
+  facet_wrap(~ member_casual) +
+  labs(
+    x = "ride length", 
+    y = "number of rides") +
+  scale_y_continuous(labels = scales::comma)
 
 users_length <- subset(rides_clean, member_casual = 'member', select=c('member_casual', 'ride_length'))
 
