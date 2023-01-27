@@ -31,28 +31,13 @@ options(dplyr.summarise.inform = FALSE)
 I completed this case study as the capstone project for the Google Data Analytics Certification course. I used base R and tidyverse to complete my analysis and create visualizations.
 
 
-## Project Objective
+# Project Objective
 ***
 
-The case study is about a fictional bike-share company called Cyclistic, and my task was to evaluate how members and non-members ("casual") use the bike-share differently. I analyzed the number of rides taken in different time periods, the duration of rides, and the types of bikes used. 
+The case study is about Chicago's Divvy bike-share, and my objective evaluate how members and non-members ("casual") use the bike-share differently. I analyzed the duration of user trips, the locations of these trips, and the types of bikes used.
 
-The data is taken from a real bike-share -- Chicago-based Divvy -- so in this report I will describe some considerations and assumptions I made to reconcile the case study and the real data set.
+The data is taken from a real bike-share -- Chicago-based Divvy -- but in the original case study my objective was set for a fictional company. Because there were some differences between Divvy and the fictional Cyclistic bike-share, I decided to conduct this analysis as if I were conducting this analysis for Divvy.
 
-```{r comparison_table}
-
-comparison_table <- tibble(
-  Item = c("Member types", "Bike types", "Docking", "Pricing"),
-  Cyclistic = c("Member, Casual", "Classic, E-bike, Accessible bikes", "Must be docked", "Unspecified"),
-  Divvy = c("Member, Casual", "Classic, E-Bike, Docked bike", "Docked, undocked with fees", "Flat rates with fees")
-)
-
-comparison_table %>% 
-  kbl() %>% 
-  kable_material(c("striped"))
-```
-
-* **Bike types**: Since Cyclistic's accessible bikes account for 8% of riders, and Divvy does not have accessible bikes, I consider only classic and e-bikes in my analysis. The presence of a nonspecific "docked" bike type in the Divvy dataset limited my analysis.
-* **Docking**: Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.000001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. As Cyclistic bikes must all be docked, I am considering only bikes that start and end at docks in my analysis.
 * **Other**: Divvy's ride timestamps don't adjust for Daylight Savings Time (which began March 13th 2022, and ended November 6th 2022).
 
 # Get the data
@@ -76,11 +61,142 @@ head(rides_2022)
 
 This file has `r nrow(df)` lines and `r ncol(df)` columns. 
 
-## Data cleaning
+# Data pre-processing
 ***
 
-This file has `r nrow(df)` lines and `r ncol(df)` columns. It is ready to be analyzed.
+```{r glimpse rides_2022}
+glimpse(rides_2022)
+```
 
+I confirm that all rows are unique by checking the number of ride IDs. TRUE indicates that all rows are unique.
+```{r}
+n_distinct(rides_2022$ride_id) == nrow(rides_2022)
+```
+
+I also confirm that all rides were taken by either members or casual users.
+```{r}
+rides_2022 %>% 
+  group_by(member_casual) %>% 
+  summarize(num_rides = n()) %>% 
+  mutate(pct_rides = 100*(num_rides/sum(num_rides))) # calculate percentage
+```
+
+### Ride times and durations
+
+I transform the started_at and ended_at fields from character vectors to datatime.
+
+```{r lubridate transform started_at ended_at}
+rides_2022$started_at <- ymd_hms(rides_2022$started_at)
+rides_2022$ended_at <- ymd_hms(rides_2022$ended_at)
+```
+
+I create a new column for ride duration in seconds. Some rides have negative ride duration, so I'll filter these out.
+
+```{r}
+rides_2022 %>% 
+  filter(ride_length < 0) %>% 
+  select(started_at, ended_at, ride_length) %>% 
+  head()
+```
+
+I'll also need to filter out rides that started during daylight savings time (before November 6th at 2 AM) and ended after daylight savings time (after November 6th at 2 AM). This is because on November 6th the hour from 2-3 AM happens twice. This means that some of the ride durations will be incorrect, as they should be an hour longer.
+
+```{r}
+rides_2022 %>% 
+  filter(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00') %>% 
+  select(started_at, ended_at, ride_length) %>% 
+  head()
+```
+
+
+`r nrow(rides_2022[rides_2022$ride_length == 60, ])` rides are very short (less than 60 seconds), and of these `r nrow(rides_2022[rides_2022$ride_length == 0, ])` are 0 seconds long.
+
+
+`r nrow(rides_2022[rides_2022$ride_length > (60*60*24), ])` rides are very long (greater than 24 hours). With a day pass, Divvy lets you ride up to 3 hours on a single trip before incurring a fee, and the pass is good for 24 hours. It's impossible to know whether trips longer than 3 hours were real trips or due to docking issues. `r nrow(rides_2022[rides_2022$ride_length > (60*60*3), ])` rides are longer than 3 hours. For my analysis I will consider typical use to be between 60 seconds and 3 hours.
+
+
+### Ride locations and bike types
+
+There are three bike types in rides_2022 - classic_bike, electric_bike, and docked_bike. Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.00001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. Divvy allows their users to take out and drop off undocked bikes for a fee.
+
+```{r}
+# How many rides were taken by members, casual users on each type
+rides_2022 %>% 
+  group_by(member_casual, rideable_type) %>% 
+  summarize(num_rides = n()) %>% 
+  mutate(pct_rides = 100*(num_rides/sum(num_rides))) # calculate percentage
+```
+
+`r nrow(rides_2022[rides_2022$rideable_type == "docked_bike", ])` rides were taken on the nonspecific docked_bike type. Only casual riders used the docked_bike type, which accounted for 7.6% of all casual rides. These bikes were undocked from 678 unique stations during all months of the year. 
+
+```{r inspect docked bike rideable type}
+
+# When were docked bikes taken out, returned
+rides_2022 %>% 
+  filter(rideable_type == "docked_bike") %>% 
+  group_by(rideable_type) %>% 
+  summarize(min_start = min(started_at), 
+            max_start = max(started_at),
+            min_end = min(ended_at),
+            max_end = max(ended_at))
+
+# Where were docked bikes taken out
+rides_2022 %>% 
+  filter(rideable_type == "docked_bike") %>% 
+  group_by(start_station_name) %>% 
+  summarize(num_rides=n()) %>% 
+  # arrange(num_rides)
+  arrange(desc(num_rides))
+```
+
+
+All rides had starting geolocations in the start_lat and start_lng fields. `r nrow(rides_2022[rides_2022$start_station_name == "", ])` rides had no starting station information. All of these bikes were electric_bike type.
+`
+Not all rides had starting geolocations in the end_lat and end_lng fields. `r nrow(rides_2022[rides_2022$end_station_name == "", ]) # count rides w/o start station name` rides had no ending station information. These bikes were classic_bike and electric_bike types.
+
+I also located 1 ride outside the city limits, which I identified as a test ride, and 8 rides to Green St & Madison Ave, which is not listed as a station (current or former) on Divvy's website. I will remove these from the data set during cleaning.
+```{r }
+# set city limits
+city_lat <- c(41, 43)
+city_lng <- c(-89, -87)
+
+# find rides outside city area
+rides_2022 %>% 
+  filter((!between(start_lat,  city_lat[1], city_lat[2])) | 
+           (!between(start_lng,  city_lng[1], city_lng[2]))) %>% 
+  select(ride_id, start_station_name, start_lat, start_lng)
+
+rides_2022 %>% 
+  filter((!between(end_lat,  city_lat[1], city_lat[2])) | 
+           (!between(end_lng,  city_lng[1], city_lng[2])) & end_lat != 0 & end_lng != 0) %>% 
+  select(ride_id, end_station_name, end_lat, end_lng)
+
+```
+
+Let's clean up this data set!
+
+```{r}
+# create new data frame - clean
+rides_clean <-rides_2022 %>% 
+  filter(!is.na(start_lat)) %>% 
+  filter(!is.na(end_lat)) %>% 
+  filter(!(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00')) %>% 
+  filter(between(start_lat, city_lat[1], city_lat[2])) %>% 
+  filter(between(end_lat, city_lat[1], city_lat[2])) %>% 
+  select(ride_id, member_casual, rideable_type, started_at, ended_at, start_station_name, end_station_name, start_lat, start_lng, end_lat, end_lng, ride_length)
+
+head(rides_clean)
+```
+
+# Get the data
+
+```{r}
+
+```
+
+
+
+This file has `r nrow(df)` lines and `r ncol(df)` columns. It is ready to be analyzed.
 
 ## Analysis and Visualizations
 

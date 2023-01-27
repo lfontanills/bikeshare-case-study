@@ -1,112 +1,193 @@
+## Data cleaning
+
+# load packages
 library(tidyverse)
 library(lubridate)
 
-# Inspect raw data frame
-str(rides_all_raw)
-summary(rides_all_raw)
+# inspect rides_2022 data set
+glimpse(rides_2022)
+head(rides_2022)
+summary(rides_2022)
 
-# ride_id: Check all ride ids are unique, TRUE = all unique, FALSE = duplicates exist
-n_distinct(rides_all_raw$ride_id) == nrow(rides_all_raw)
-
-# rideable_type: Find different bike types and % of all rides
-rides_all_raw %>% 
-  group_by(rideable_type) %>% 
-  summarize(count=n()) %>% 
-  mutate(percent = 100*(count/sum(count)))
-
-# membership: Find rider types and % of all rides
-rides_all_raw %>% 
-  group_by(member_casual) %>% 
-  summarize(count = n()) %>% 
-  mutate(percent = 100*(count/sum(count)))
+# Check that all ride ids are unique
+n_distinct(rides_2022$ride_id) == nrow(rides_2022)
 
 
-# started_at and ended_at: Change type from chr to positx
-rides_all_raw$started_at <- ymd_hms(rides_all_raw$started_at)
-rides_all_raw$ended_at <- ymd_hms(rides_all_raw$ended_at)
+#########
+## Ride times and duration
 
-# ride_length: create new column for ride duration, add 1 hour to rides that started before 2AM and ended after 3AM on March 13th (DST begins)
-rides_all_raw$ride_length_raw <- as.numeric(rides_all_raw$ended_at - rides_all_raw$started_at)
-rides_all_raw <- mutate(rides_all_raw, ride_length = ifelse(started_at <= '2022-03-13 02:00:00' & ended_at >= '2022-03-13 03:00:00', ride_length_raw - 360, ride_length_raw))
+# Change started_at, ended_at from character to POSIXct 
+rides_2022$started_at <- ymd_hms(rides_2022$started_at)
+rides_2022$ended_at <- ymd_hms(rides_2022$ended_at)
+glimpse(rides_2022)
 
-# check it worked
-rides_all_raw %>% 
-  filter(started_at <= '2022-03-13 02:00:00' & ended_at >= '2022-03-13 03:00:00')
+# Create column ride_length for duration
+rides_2022$ride_length <- as.numeric(rides_2022$ended_at - rides_2022$started_at)
+summary(rides_2022)
 
-# ride_duration: find any rides that started before 2AM and ended after 2AM on November 6th (DST ends)
-rides_all_raw %>% 
-  filter(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00')
+# Identify rides with negative ride length
+rides_2022 %>% 
+  filter(ride_length < 0)
+
+rides_2022 %>% 
+  filter(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00') %>% 
+  select(started_at, ended_at, ride_length) %>% 
+  head()
+
+# Identify rides with 0 ride length
 
 # ride_duration: find any rides that were shorter than 1 minute and longer than 24 hours
-rides_all_raw %>% 
-  filter(ride_length < 60 | ride_length > (60*60*24)) # time in seconds
+rides_2022 %>% 
+  filter(ride_length < 60)
 
-# start_station_name, end_station_name Check for rides with no start or end station name
-rides_all_raw %>% 
+
+rides_2022 %>% 
+  filter(ride_length > 60*60*24)
+
+nrow(rides_2022[rides_2022$ride_length == 0, ])
+nrow(rides_2022[rides_2022$ride_length == 60, ])
+nrow(rides_2022[rides_2022$ride_length > (60*60*24), ])
+nrow(rides_2022[rides_2022$ride_length > (60*60*3), ])
+
+
+# see long and short rides by user type
+rides_2022 %>% 
+  filter(ride_length < 60) %>% 
+  group_by(member_casual) %>% 
+  summarize(num_rides=n()) %>% 
+  mutate(pct_rides = 100* num_rides/sum(num_rides))
+
+rides_2022 %>% 
+  filter(ride_length > 60*60*3) %>% 
+  group_by(member_casual) %>% 
+  summarize(num_rides=n()) %>% 
+  mutate(pct_rides = 100* num_rides/sum(num_rides))
+
+rides_2022 %>% 
+  filter(ride_length > 60*60*24) %>% 
+  group_by(member_casual) %>% 
+  summarize(num_rides=n()) %>% 
+  mutate(pct_rides = 100* num_rides/sum(num_rides))
+
+#########
+## Bike types and locations
+
+# See bike types for members and casual users 
+rides_2022 %>% 
+  group_by(member_casual, rideable_type) %>% 
+  summarize(num_rides = n()) %>% 
+  mutate(pct_rides = 100*(num_rides/sum(num_rides)))
+
+nrow(rides_2022[rides_2022$rideable_type == "docked_bike", ])
+
+# calculate percentage
+
+# Learn more about docked_bike type
+rides_2022 %>% 
+  filter(rideable_type == "docked_bike") %>% 
+  group_by(started_at) %>% 
+  # arrange(started_at)
+  # arrange(desc(started_at))
+  
+# When were docked bikes taken out
+rides_2022 %>% 
+  filter(rideable_type == "docked_bike") %>% 
+  group_by(rideable_type) %>% 
+  summarize(min_start = min(started_at), 
+            max_start = max(started_at),
+            min_end = min(ended_at),
+            max_end = max(ended_at))
+
+# Where were docked bikes taken out
+rides_2022 %>% 
+  filter(rideable_type == "docked_bike") %>% 
   group_by(start_station_name) %>% 
-  summarize(count = n()) %>% 
-  arrange(desc(count)) %>% 
-  mutate(percent = 100*(count/sum(count)))
+  summarize(num_rides=n()) %>% 
+  # arrange(num_rides)
+  arrange(desc(num_rides))
 
-rides_all_raw %>% 
-  group_by(end_station_name) %>% 
-  summarize(count = n()) %>% 
-  arrange(desc(count)) %>% 
-  mutate(percent = 100*(count/sum(count)))
+# Find docks with no start or end times
+summary(rides_2022$started_at)
+summary(rides_2022$ended_at)
 
-# find any rides where station name absent & station id present, or station name present & station id absent
-rides_all_raw %>% 
-  filter(start_station_name != "" & start_station_id == "")
+# Check out ride starting locations
+rides_2022 %>% 
+  filter(start_station_name == "")
 
-rides_all_raw %>% 
-  filter(start_station_name == "" & start_station_id != "")
+rides_2022 %>% 
+  filter(start_station_id == "")
 
-rides_all_raw %>% 
-  filter(end_station_name != "" & end_station_id == "")
+nrow(rides_2022[rides_2022$start_station_name == "", ]) # count rides w/o start station name
+nrow(rides_2022[rides_2022$start_station_id == "", ]) # count rides w/o end_station_name
+nrow(rides_2022[rides_2022$start_station_name == "" & rides_2022$start_station_id == "", ])
 
-rides_all_raw %>% 
-  filter(end_station_name == "" & end_station_id != "")
+nrow(rides_2022[is.na(rides_2022$start_lat), ]) # count rides w/o start lat
+nrow(rides_2022[is.na(rides_2022$start_lng), ]) # count rides w/o end lat
 
-# start_lat: find any rides starting outside the Chicago area
-# coordinates from https://www.google.com/search?q=divvy+chicago+map&oq=divvy+chicago+map&aqs=chrome..69i57.3411j0j4&sourceid=chrome&ie=UTF-8
+# Check if which bike types had start location data
+rides_2022 %>% 
+  filter(rideable_type == "docked_bike" & start_station_name == "")
 
-city_lat <- c(41.6, 42.1)
-city_lng <- c(-87.9, -87.5)
+rides_2022 %>% 
+  filter(rideable_type == "classic_bike" & start_station_name == "")
 
-rides_all_raw %>% 
-  filter((!between(start_lat,  city_lat[1], city_lat[2]) & start_station_name != "") | 
-           (!between(start_lng,  city_lng[1], city_lng[2]) & start_station_name != "")) 
-
-rides_all_raw %>% 
-  filter((!between(end_lat,  city_lat[1], city_lat[2]) & end_station_name != "") | 
-           (!between(end_lng,  city_lng[1], city_lng[2]) & end_station_name != "")) 
+rides_2022 %>% 
+  filter(rideable_type == "electric_bike" & start_station_name == "")
 
 
-# create new data frame - clean
-rides_all_clean <-rides_all_raw %>% 
-  filter(rideable_type == "classic_bike" | rideable_type == "electric_bike") %>% 
-  filter(between(ride_length, 60, (60*60*24))) %>% 
-  filter(start_station_name != "") %>% 
-  filter(end_station_name != "") %>% 
+# Check out ride ending locations
+
+rides_2022 %>% 
+  filter(end_station_name == "")
+
+rides_2022 %>% 
+  filter(end_station_id == "")
+
+nrow(rides_2022[rides_2022$end_station_name == "", ]) # count rides w/o start station name
+nrow(rides_2022[rides_2022$end_station_id == "", ]) # count rides w/o end_station_name
+nrow(rides_2022[rides_2022$end_station_name == "" & rides_2022$end_station_id == "", ])
+
+nrow(rides_2022[is.na(rides_2022$start_lat), ]) # count rides w/o start lat
+nrow(rides_2022[is.na(rides_2022$start_lng), ]) # count rides w/o end lat
+
+
+# Check if which bike types had end location data
+rides_2022 %>% 
+  filter(rideable_type == "docked_bike" & end_station_name == "")
+
+rides_2022 %>% 
+  filter(rideable_type == "classic_bike" & end_station_name == "")
+
+rides_2022 %>% 
+  filter(rideable_type == "electric_bike" & end_station_name == "")
+
+# set city limits
+city_lat <- c(41, 43)
+city_lng <- c(-89, -87)
+
+# find rides outside city area
+rides_2022 %>% 
+  filter((!between(start_lat,  city_lat[1], city_lat[2])) | 
+           (!between(start_lng,  city_lng[1], city_lng[2]))) %>% 
+  select(ride_id, start_station_name, start_lat, start_lng)
+
+rides_2022 %>% 
+  filter((!between(end_lat,  city_lat[1], city_lat[2])) | 
+           (!between(end_lng,  city_lng[1], city_lng[2])) & end_lat != 0 & end_lng != 0) %>% 
+  select(ride_id, end_station_name, end_lat, end_lng)
+
+#####
+
+## create clean df
+
+rides_clean <-rides_2022 %>% 
+  filter(!is.na(start_lat)) %>% 
+  filter(!is.na(end_lat)) %>% 
   filter(!(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00')) %>% 
   filter(between(start_lat, city_lat[1], city_lat[2])) %>% 
-  filter(between(end_lat, city_lat[1], city_lat[2]))
+  filter(between(end_lat, city_lat[1], city_lat[2])) %>% 
+  select(ride_id, member_casual, rideable_type, started_at, ended_at, start_station_name, end_station_name, start_lat, start_lng, end_lat, end_lng, ride_length)
 
-# export data frame as csv
-write.csv(rides_all_clean, '/Users/laurafontanills/Documents/projects/bikeshare-case-study/rides_all_clean.csv', row.names = FALSE)
+# export clean df as csv for analysis
+write.csv(rides_clean, "~/Documents/projects/bikeshare-case-study/rides_clean.csv") 
 
-# see how many rides we have left to analyze  
-nrow(rides_all_raw) - nrow(rides_all_clean)
-(nrow(rides_all_raw) - nrow(rides_all_clean))/nrow(rides_all_clean) * 100
-
-# inspect clean data frame
-summary(rides_all_clean)
-
-# check rideable types ok
-rides_all_clean %>% 
-  group_by(rideable_type) %>% 
-  summarize(count =n()) %>% 
-  mutate(percent = 100*(count/sum(count)))
-
-rides_all_clean %>% 
-  filter(end_station_name =="")
