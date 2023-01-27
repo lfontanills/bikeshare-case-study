@@ -2,15 +2,13 @@
 title: "Case Study: How Does a Bike-Share Navigate Speedy Success?"
 author: "Laura Fontanills"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-mail: "lfontanills@gmail.com"
-linkedin: "lfontanills"
-github: "lfontanills"
-home: "lfontanills.github.io"
 # !!! You need to provide a logo image here !!! Or just delete the field for no logo
 # logo: "logo_gallery.png"
 output:
-  epuRate::epurate:
+  html_document:
     toc: TRUE
+    toc_float: TRUE
+    toc_collapsed: TRUE
     number_sections: FALSE
     code_folding: "hide"
 ---
@@ -19,28 +17,23 @@ output:
 library(tidyverse) # data processing and analysis
 library(lubridate) # wrangle dates and times
 library(kableExtra) # generate data tables
-library(rmarkdown) # You need this library to run this template.
-library(epuRate)  # Install with devtools: install_github("holtzy/epuRate", force=TRUE)
 options(dplyr.summarise.inform = FALSE)
 ```
 
 
+# Read this first
+***
+If you'd like to skip all the data cleaning steps, click on "Get the data" in the sidebar. 
+
 # About
 ***
-
-I completed this case study as the capstone project for the Google Data Analytics Certification course. I used base R and tidyverse to complete my analysis and create visualizations.
-
-
-# Project Objective
-***
+I completed this case study as the capstone project for the Google Data Analytics Certification course. I used base R and tidyverse to complete my analysis and create visualizations. 
 
 The case study is about Chicago's Divvy bike-share, and my objective evaluate how members and non-members ("casual") use the bike-share differently. I analyzed the duration of user trips, the locations of these trips, and the types of bikes used.
 
 The data is taken from a real bike-share -- Chicago-based Divvy -- but in the original case study my objective was set for a fictional company. Because there were some differences between Divvy and the fictional Cyclistic bike-share, I decided to conduct this analysis as if I were conducting this analysis for Divvy.
 
-* **Other**: Divvy's ride timestamps don't adjust for Daylight Savings Time (which began March 13th 2022, and ended November 6th 2022).
-
-# Get the data
+# Data pre-processing
 ***
 
 [Click here](https://divvy-tripdata.s3.amazonaws.com/index.html) to view historical Divvy data. Each month's data is contained in a single .csv file. I looked at data for the previous 12 months (January 2022 to December 2022).
@@ -59,14 +52,7 @@ rides_2022 <- read.csv("rides_2022.csv")
 head(rides_2022)
 ```
 
-This file has `r nrow(df)` lines and `r ncol(df)` columns. 
-
-# Data pre-processing
-***
-
-```{r glimpse rides_2022}
-glimpse(rides_2022)
-```
+This file has `r nrow(rides_2022)` lines and `r ncol(rides_2022)` columns. 
 
 I confirm that all rows are unique by checking the number of ride IDs. TRUE indicates that all rows are unique.
 ```{r}
@@ -92,7 +78,10 @@ rides_2022$ended_at <- ymd_hms(rides_2022$ended_at)
 
 I create a new column for ride duration in seconds. Some rides have negative ride duration, so I'll filter these out.
 
-```{r}
+```{r create ride length column}
+rides_2022$ride_length <- as.numeric(rides_2022$ended_at - rides_2022$started_at)
+
+
 rides_2022 %>% 
   filter(ride_length < 0) %>% 
   select(started_at, ended_at, ride_length) %>% 
@@ -155,7 +144,7 @@ All rides had starting geolocations in the start_lat and start_lng fields. `r nr
 Not all rides had starting geolocations in the end_lat and end_lng fields. `r nrow(rides_2022[rides_2022$end_station_name == "", ]) # count rides w/o start station name` rides had no ending station information. These bikes were classic_bike and electric_bike types.
 
 I also located 1 ride outside the city limits, which I identified as a test ride, and 8 rides to Green St & Madison Ave, which is not listed as a station (current or former) on Divvy's website. I will remove these from the data set during cleaning.
-```{r }
+```{r ride locations}
 # set city limits
 city_lat <- c(41, 43)
 city_lng <- c(-89, -87)
@@ -175,9 +164,11 @@ rides_2022 %>%
 
 Let's clean up this data set!
 
-```{r}
+```{r make clean data frame}
+
 # create new data frame - clean
 rides_clean <-rides_2022 %>% 
+  filter(ride_length > 60 & ride_length < 60*60*3) %>% 
   filter(!is.na(start_lat)) %>% 
   filter(!is.na(end_lat)) %>% 
   filter(!(started_at < '2022-11-06 02:00:00' & ended_at > '2022-11-06 02:00:00')) %>% 
@@ -190,21 +181,52 @@ head(rides_clean)
 
 # Get the data
 
-```{r}
-
+```{r read rides_clean}
+rides_clean <- read.csv("rides_clean.csv")
+head(rides_clean)
 ```
 
+This file has `r nrow(rides_clean)` lines and `r ncol(rides_clean)` columns. It is ready to be analyzed.
 
+# Analysis and Visualizations
 
-This file has `r nrow(df)` lines and `r ncol(df)` columns. It is ready to be analyzed.
+## Finding 1: Casual users take longer trips than members
 
-## Analysis and Visualizations
+Casual trips are about 8 minutes longer, on average, than member trips. Perhaps they're not as used to bikes or bike-shares, or perhaps they are using the bikes for fun.
 
-## Finding 1: Casual riders take more weekend trips
-Member rides peak during the work week, which could indicate that many members use bikes for commuting. Casual rides peak on Saturday and Sunday, suggesting that casual riders use bikes for leisure or tourism.
+```{r get summary statistics for duration}
+tapply(rides_clean$ride_length, rides_clean$member_casual, summary)
+```
+
+```{r plot durations, warning=FALSE, fig.align='center' }
+
+length_plot <-
+rides_clean %>% 
+  group_by(member_casual) %>% 
+  summarize(number_of_rides = n(), mean_length = mean(ride_length)) %>% 
+  arrange(member_casual) %>% 
+  ggplot(aes(x=member_casual, y=mean_length, fill=member_casual)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Average ride duration",
+    subtitle = "For all trips between 1 minute and 24 hours long",
+    x = "User type", 
+    y = "Average ride duration (seconds)",
+    fill = "User type") +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Greens", direction = -1)
+
+length_plot
+```
+
+## Finding 2: Casual riders take more weekend trips
+
+Member rides peak during the work week, which could indicate that many members use bikes for commuting. Casual rides peak on Saturday and Sunday, suggesting that casual users use bikes for leisure or tourism.
+
 ```{r fig.align='center', warning=FALSE}
 weekday_plot <-
-  rides_all_clean %>% 
+  rides_clean %>% 
   mutate(weekday = wday(started_at, label = TRUE, abbr = FALSE)) %>% 
   group_by(member_casual, weekday) %>% 
   summarize(count=n()) %>% 
@@ -218,66 +240,99 @@ weekday_plot <-
     fill = "User type") +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
-  scale_fill_brewer(palette = "Greens", direction = -1)
+  scale_fill_brewer(palette = "Blues", direction = -1)
 
 weekday_plot
 ```
 
-## Finding 2: Casual riders take longer trips than members
-
-Member rides, on average, take about 12 minutes, while casual rides last more than 20 minutes. Taken with finding 1, this indicates that many casual users are riding for fun.
-```{r, warning=FALSE, fig.align='center' }
-length_plot <-
-rides_all_clean %>% 
-  group_by(member_casual) %>% 
-  summarize(number_of_rides = n(), mean_length = mean(ride_length)) %>% 
-  arrange(member_casual) %>% 
-  ggplot(aes(x=member_casual, y=mean_length, fill=member_casual)) +
-  geom_col(position = "dodge") +
-  labs(
-    title = "Average ride duration",
-    subtitle = "For all trips between 1 minute and 24 hours long",
-    x = "User type", 
-    y = "Average ride duration (seconds)",
-    fill = "User type") +
-  scale_x_discrete(labels = c("classic bike", "electric bike")) +
-  scale_y_continuous(labels = scales::comma) +
-  theme_bw() + 
-  scale_fill_brewer(palette = "Greens", direction = -1)
-
-length_plot
-```
-
 ## Finding 3: Casual riders use a few stations relatively frequently
 
-Casual riders show a clear preference for 5 stations in particular -- these stations make up about 8% of all casual rides (by starting point). Members don't especially favor a few stations, and no station accounts for more than 1% of all member rides (by starting point).
+Casual riders show a clear preference for 5 stations in particular -- these stations make up about 8% of all casual rides (by starting point). The top 5 casual starting stations are located in parks in the city center, close to the waterfront. These are very popular locations for tourists and locals.
+
+Members don't especially favor any stations, and no station accounts for more than 1% of all member rides (by starting point).
+
+If you'd like to see a fancy map animation I made with Divvy rider data, check out the Visualizations section of my website.
+
 ```{r, warning=FALSE, fig.align='center' }
-rides_all_clean %>% 
+
+  rides_clean %>% 
   filter(member_casual == "casual") %>% 
   group_by(member_casual, start_station_name) %>% 
-  summarize(count = n()) %>% 
-  arrange(desc(count)) %>% 
-  mutate(percent_of_rides = 100*(count/sum(count))) %>% 
+  summarize(num_rides = n()) %>% 
+  arrange(desc(num_rides)) %>% 
+  mutate(percent_rides = 100*(num_rides/sum(num_rides))) %>% 
   head(10)
 
-rides_all_clean %>% 
+  rides_clean %>% 
   filter(member_casual == "member") %>% 
   group_by(member_casual, start_station_name) %>% 
-  summarize(count = n()) %>% 
-  arrange(desc(count)) %>% 
-  mutate(percent_of_rides = 100*(count/sum(count))) %>% 
+  summarize(num_rides = n()) %>% 
+  arrange(desc(num_rides)) %>% 
+  mutate(percent_rides = 100*(num_rides/sum(num_rides))) %>% 
   head(10)
 ```
-The top 5 casual starting stations are located in parks in the city center, close to the waterfront. These are very popular locations for tourists and locals.
+## Finding 4: Casual riders use more e-bikes
+
+In 2022, Casual riders used more electric bikes than classic bikes. By contrast, members favored classic bikes.
+
+```{r summary bike types}
+rides_clean %>% 
+  group_by(member_casual, rideable_type) %>%
+  summarize(num_rides = n()) %>% 
+  mutate(pct_rides = 100* num_rides/sum(num_rides))
+```
+
+
+```{r}
+bike_type_plot <- rides_clean %>% 
+  group_by(rideable_type, member_casual) %>% 
+  filter(rideable_type == "classic_bike" | rideable_type == "electric_bike") %>% 
+  summarize(num_rides = n()) %>% 
+  arrange(member_casual) %>% 
+  ggplot(aes(x=member_casual, y=num_rides, fill=rideable_type)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Number of rides with Classic Bikes, Electric Bikes",
+    subtitle = "For all trips between 1 minute and 3 hours long",
+    x = "Membership type", 
+    y = "Number of rides",
+    fill = "Bike type", 
+    labels = c("classic_bike", "electric_bike")) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_bw() + 
+  scale_fill_brewer(palette = "Blues")
+
+bike_type_plot
+```
+
 
 # Conclusion
-***
-Casual riders and members differ in when they ride bikes, and how long they ride for. Casual riders also favor a few stations in the city center.
 
 Here are my recommendations for converting casual riders to members:
-* Market to non-commuter casual riders who use bikes for leisure
-* Consider new membership options and pricing (e.g. weekend passes, adjusted pricing for longer trips)
+* Find ways to make membership more appealing to e-bike users
+* Market to non-commuter casual users who use bikes for leisure
 * Increase advertising at high-traffic stations in the city center
+
+## Some extras
+
+Here's a sample of the statistical tests I used to determine whether casual users differed significantly from members. 
+
+```{r ride duration stats}
+
+# Ride durations between members and casual users
+ggplot(rides_clean, aes(x = ride_length)) +
+  geom_histogram() +
+  facet_wrap(~ member_casual) +
+  labs(
+    x = "ride length", 
+    y = "number of rides") +
+  scale_y_continuous(labels = scales::comma)
+
+users_length <- subset(rides_clean, member_casual = 'member', select=c('member_casual', 'ride_length'))
+
+wilcox.test(users_length$ride_length ~ users_length$member_casual)
+```
+
 
 ## Resources
 ***
@@ -286,7 +341,3 @@ Here are my recommendations for converting casual riders to members:
 [Data license](https://ride.divvybikes.com/data-license-agreement)
 
 [City of Chicago Divvy database](https://data.cityofchicago.org/Transportation/Divvy-Bicycle-Stations-All-Map/bk89-9dk7)
-
-<!-- Read more about this template [here](https://github.com/holtzy/epuRate). -->
-
-<!-- Learn how to custom your R Markdown document [here](https://holtzy.github.io/Pimp-my-rmd/). -->
