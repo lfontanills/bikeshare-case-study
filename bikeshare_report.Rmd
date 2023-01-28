@@ -1,5 +1,5 @@
 ---
-title: "Case Study: How Does a Bike-Share Navigate Speedy Success?"
+title: "Case study: How do cyclists use Divvy differently?"
 author: "Laura Fontanills"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 # !!! You need to provide a logo image here !!! Or just delete the field for no logo
