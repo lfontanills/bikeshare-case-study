@@ -4,8 +4,10 @@ author: "Laura Fontanills"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 # !!! You need to provide a logo image here !!! Or just delete the field for no logo
 # logo: "logo_gallery.png"
+theme: readable
 output:
   html_document:
+    keep_md: yes
     toc: TRUE
     toc_float: TRUE
     toc_collapsed: TRUE
