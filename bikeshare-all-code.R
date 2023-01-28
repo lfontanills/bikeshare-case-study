@@ -2,6 +2,8 @@
 
 library(tidyverse) # data processing and analysis
 library(lubridate) # wrangle dates and times
+library(kableExtra) # generate data tables
+
 #####
 ## Data Wrangling
 
