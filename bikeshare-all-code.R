@@ -22,7 +22,7 @@ rides_202211 <- read.csv("202211-divvy-tripdata.csv") # November 2022
 rides_202212 <- read.csv("202212-divvy-tripdata.csv") # December 2022
 
 # create a combined data frame for all rides over 12-month period
-rides_all_raw <- rbind(rides_202201,
+rides_2022<- rbind(rides_202201,
                        rides_202202,
                        rides_202203,
                        rides_202204, 
@@ -36,7 +36,7 @@ rides_all_raw <- rbind(rides_202201,
                        rides_202212)
 
 # write combined data frame as csv
-write.csv(rides_all_raw, "~/Documents/projects/bikeshare-case-study/rides_all_raw.csv") 
+write.csv(rides_2022, "~/Documents/projects/bikeshare-case-study/rides_all_raw.csv") 
 
 #####
 ## Data cleaning
@@ -255,16 +255,7 @@ rides_clean %>%
 tapply(rides_clean$ride_length, rides_clean$member_casual, summary)
 
 # check if normal distribution
-
-ggplot(rides_clean, aes(x = ride_length)) +
-  geom_histogram() +
-  facet_wrap(~ member_casual) +
-  labs(
-    x = "ride length", 
-    y = "number of rides") +
-  scale_y_continuous(labels = scales::comma)
-
-users_length <- subset(rides_clean, member_casual = 'member', select=c('member_casual', 'ride_length'))
+users_length <- subset(rides_clean, select=c('member_casual', 'ride_length'), member_casual = 'member')
 
 wilcox.test(users_length$ride_length ~ users_length$member_casual)
 

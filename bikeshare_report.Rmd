@@ -321,26 +321,6 @@ Here are my recommendations for converting casual riders to members:
 * Market to non-commuter casual users who use bikes for leisure
 * Increase advertising at high-traffic stations in the city center
 
-## Some extras
-
-Here's a sample of the statistical tests I used to determine whether casual users differed significantly from members. 
-
-```{r ride duration stats, warning=FALSE, fig.align='center' }
-
-# Ride durations between members and casual users
-ggplot(rides_clean, aes(x = ride_length)) +
-  geom_histogram() +
-  facet_wrap(~ member_casual) +
-  labs(
-    x = "ride length", 
-    y = "number of rides") +
-  scale_y_continuous(labels = scales::comma)
-
-users_length <- subset(rides_clean, member_casual = 'member', select=c('member_casual', 'ride_length'))
-
-wilcox.test(users_length$ride_length ~ users_length$member_casual)
-```
-
 
 ## Resources
 ***
