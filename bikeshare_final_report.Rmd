@@ -235,7 +235,7 @@ rides_clean %>%
     y = "Average ride duration (minutes)",
     fill = "User type") +
   scale_y_continuous(labels = scales::comma) +
-  theme_bw() + 
+  theme_classic() +
   scale_fill_brewer(palette = "Blues", direction = -1)
 
 length_plot
@@ -260,7 +260,7 @@ weekday_plot <-
     y = "Number of rides",
     fill = "User type") +
   scale_y_continuous(labels = scales::comma) +
-  theme_bw() + 
+  theme_classic() +
   scale_fill_brewer(palette = "Blues", direction = -1)
 
 weekday_plot
@@ -317,7 +317,7 @@ bike_type_plot <- rides_clean %>%
     fill = "Bike type", 
     labels = c("classic_bike", "electric_bike")) +
   scale_y_continuous(labels = scales::comma) +
-  theme_bw() + 
+  theme_classic() +
   scale_fill_brewer(palette = "Blues")
 
 bike_type_plot
