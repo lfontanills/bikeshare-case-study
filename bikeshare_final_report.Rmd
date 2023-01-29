@@ -322,15 +322,17 @@ bike_type_plot <- rides_clean %>%
 
 bike_type_plot
 ```
+
+
 # Recommendations
 
-** 1. Appeal to electric bike users.**
+#### Appeal to electric bike users.
 Casual riders take more trips on e-bikes than on classic bikes. Electric bikes are fun, easy to use, and somewhat novel. Communicating the advantages of membership for e-bike users could convert some casual users.
 
-** 2. Target casual cyclists riding for leisure.**
-Casual riders take more trips on weekends. Advertising membership as a cost-effective way of exploring the city could resonate with people who don't have time to cycle during the week, and want to use bikes for fun. Weekend or off-peak memberships could be an option to explore.
+#### Target casual cyclists riding for leisure.
+Casual riders take more trips on weekends. Advertising membership as a cost-effective way of exploring the city could resonate with people who don't have time to cycle during the week, and who want to use bikes for fun. Weekend or off-peak memberships could be an option to explore.
 
-** 3. Increase advertising at high-traffic stations.**
+#### Increase advertising at high-traffic stations.
 There are 5 stations that are heavily used by casual riders, all of which are located in the city center. Advertise membership to locals who want to get around Chicago to see parks, museums, and restaurants. 
 
 # Divvy Information
