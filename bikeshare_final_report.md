@@ -98,7 +98,7 @@ head(rides_2022)
 ```
 
 
-# Data cleaning
+# Data Cleaning
 
 ## Considerations
 
@@ -143,7 +143,7 @@ rides_2022 %>%
 ## 2 member          3345685      59.0
 ```
 
-## Ride times and ride durations
+## Ride Time Data
 
 I transformed the `started_at` and `ended_at` fields from character vectors to datatime.
 
@@ -180,7 +180,7 @@ rides_2022 %>%
 
 5360 rides are very long (greater than 24 hours). With a day pass, Divvy lets you ride up to 3 hours on a single trip before incurring a fee, and the pass is good for 24 hours. It's impossible to know whether trips longer than 3 hours were real trips or whether the user had docking issues. 19592 rides are longer than 3 hours. For my analysis I considered typical use to be between 60 seconds and 3 hours.
 
-## Ride locations and bike types
+## Ride Location and Bike Data
 
 There are three bike types in the data frame - classic_bike, electric_bike, and docked_bike. Divvy docks use a different geolocation system than the bikes themselves-- docks have geolocation with 0.00001° sensitivity, while undocked bikes have geolocation with 0.01° sensitivity. Many Divvy docks are within 0.01° of other docks, especially in the city center where most rides take place, so undocked bikes can't reliably be matched with nearby docks. Divvy allows their users to take out and drop off undocked bikes for a fee.
 
@@ -389,7 +389,7 @@ rides_clean %>%
     fill = "User type") +
   scale_y_continuous(labels = scales::comma) +
   theme_bw() + 
-  scale_fill_brewer(palette = "Greens", direction = -1)
+  scale_fill_brewer(palette = "Blues", direction = -1)
 
 length_plot
 ```
@@ -534,19 +534,16 @@ bike_type_plot
 <img src="bikeshare_final_report_files/figure-html/bike types plot-1.png" style="display: block; margin: auto;" />
 # Recommendations
 
-###### Appeal to electric bike users. 
-
+** 1. Appeal to electric bike users.**
 Casual riders take more trips on e-bikes than on classic bikes. Electric bikes are fun, easy to use, and somewhat novel. Communicating the advantages of membership for e-bike users could convert some casual users.
 
-###### Target casual cyclists riding for leisure.
-
+** 2. Target casual cyclists riding for leisure.**
 Casual riders take more trips on weekends. Advertising membership as a cost-effective way of exploring the city could resonate with people who don't have time to cycle during the week, and want to use bikes for fun. Weekend or off-peak memberships could be an option to explore.
 
-###### Increase advertising at high-traffic stations
-
+** 3. Increase advertising at high-traffic stations.**
 There are 5 stations that are heavily used by casual riders, all of which are located in the city center. Advertise membership to locals who want to get around Chicago to see parks, museums, and restaurants. 
 
-## Divvy Information
+# Divvy Information
 
 [Data source](https://divvy-tripdata.s3.amazonaws.com/index.html)
 
