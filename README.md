@@ -1,9 +1,11 @@
 # Bike-share case study
 
+[Check out my full report here!](https://rpubs.com/lfontanills/bikeshare)
+
 ## About
 I completed this case study as the capstone project for the Google Data Analytics Certification course. I used base R and tidyverse to complete my analysis and create visualizations. 
 
-The case study is about Chicago's Divvy bike-share, and my objective evaluate how members and non-members ("casual") use the bike-share differently. I analyzed the duration of user trips, the locations of these trips, and the types of bikes used.
+The case study is about Chicago's Divvy bike-share, and my objective is evaluate how members and non-members ("casual") use the bike-share differently. I analyzed the duration of user trips, the locations of these trips, and the types of bikes used.
 
 The data is taken from a real bike-share -- Chicago-based Divvy -- but in the original case study my objective was set for a fictional company. Because there were some differences between Divvy and the fictional Cyclistic bike-share, I decided to conduct this analysis as if I were conducting this analysis for Divvy.
 
